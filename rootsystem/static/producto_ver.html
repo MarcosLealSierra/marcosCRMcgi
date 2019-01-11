@@ -1,0 +1,28 @@
+      <!-- contenido -->
+      <div class="panel panel-primary">
+      
+        <!-- PANEL CABECERA DEL FORMULARIO -->
+        <div class="panel-heading">
+          <h4><span class="glyphicon glyphicon-ok-sign"></span> <b>Producto # $producto_id agregado con éxito</b></h4>
+        </div>
+
+
+        <div class="panel-body">
+            
+            <div class="col-md-12">
+              <h3>$denominacion &nbsp; <span class="label label-primary">€ $precio.-</span></h3>
+            </div>
+            <div class="col-md-4">
+              <img src="/producto/imagen/{{ producto_id }}" class="img-rounded img-responsive">
+            </div>
+   
+        </div>
+        
+        <div class="panel-footer">
+          <a href="/producto/agregar"><i class="fas fa-plus"></i></a>&nbsp;&nbsp;
+          <a href="/producto/editar/{{ producto_id }}"><i class="far fa-edit"></i></a>&nbsp;&nbsp;
+            <a href="/producto/eliminar/{{ producto_id }}"><i class="far fa-trash-alt"></i></a>
+        </div>
+      
+      </div>
+      <!-- contenido -->

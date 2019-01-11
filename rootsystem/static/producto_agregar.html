@@ -1,0 +1,66 @@
+      <!-- contenido -->
+      <div class="panel panel-primary">
+      
+        <!-- PANEL CABECERA DEL FORMULARIO -->
+        <div class="panel-heading">
+          <h4><span class="glyphicon glyphicon-pencil"></span> <b>Agregar nuevo producto</b></h4>
+        </div>
+
+
+        <div class="panel-body">
+        
+          <!-- errores -->
+          <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" 
+              aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            
+            <p><b>Se han producido algunos errores:</b></p>
+          </div>
+          <!-- errores -->
+        
+          <form class="form-horizontal" method="post" action="/producto/guardar" enctype="multipart/form-data">
+
+            <!-- CAMPO DE TEXTO -->
+            <div class="form-group">
+                <label for="texto" class="col-sm-3 control-label">Nombre del producto: </label>
+                <div class="col-sm-5">
+                  <input type="text" class="form-control" id="texto" name="denominacion">
+                </div>
+            </div>
+            
+            <!-- CAMPO DE PRECIO -->
+            <div class="form-group">
+                <label for="precio" class="col-sm-3 control-label">Precio: </label>
+                <div class="col-sm-2">
+                  <div class="input-group">
+                    <div class="input-group-addon">€</div>
+                    <input type="text" class="form-control" id="precio" name="precio">
+                  </div>
+                </div>
+            </div>
+           
+
+            <!-- FILE -->
+            <div class="form-group">
+                <label for="archivo" class="col-sm-3 control-label">Imagen principal: </label>
+                <div class="col-sm-5">
+                  <input type="file" id="archivo" name="imagen" accept=".png">
+                </div>
+            </div>
+            
+            
+            <!-- BOTÓN -->
+            <div class="form-group">
+                <label for="archivo" class="col-sm-3 control-label">&nbsp;</label>
+                <div class="col-sm-5">
+                  <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+            
+
+          </form>
+        </div>
+      
+      </div>
+      <!-- contenido -->
