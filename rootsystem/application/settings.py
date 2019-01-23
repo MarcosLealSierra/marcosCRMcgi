@@ -17,4 +17,4 @@ ARG = URL_LIST[2] if len(URL_LIST) > 2 else 0
 HTTP_404 = "Status: 404 Not Found"
 HTTP_HTML = "Content-type: text/html; charset=utf-8"
 HOST = "http://{}".format(environ['SERVER_NAME'])
-HTTP_REDIRECT = "Location: {}{}\n".format(HOST, DEFAULT_RESOURCE)
+HTTP_REDIRECT = "Location: {}{}".format(HOST, DEFAULT_RESOURCE)
