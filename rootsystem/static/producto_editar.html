@@ -3,7 +3,7 @@
       
         <!-- PANEL CABECERA DEL FORMULARIO -->
         <div class="panel-heading">
-          <h4><span class="glyphicon glyphicon-pencil"></span> <b>Editar producto {{ producto_id }}</b></h4>
+          <h4><span class="glyphicon glyphicon-pencil"></span> <b>Editar producto $producto_id</b></h4>
         </div>
 
 
@@ -16,19 +16,18 @@
             </button>
             
             <p><b>Se han producido algunos errores:</b></p>
-            <p>{% autoescape off %}{{ errores }}{% endautoescape %}</p>
+            <p>$errores</p>
           </div>
           <!-- errores -->
         
           <form class="form-horizontal" method="post" action="/producto/actualizar" enctype="multipart/form-data">
-            {% csrf_token %}
 
-            <input type="hidden" name="producto_id" value="{{ producto_id  }}">            
+            <input type="hidden" name="producto_id" value="$producto_id">            
             <!-- CAMPO DE TEXTO -->
             <div class="form-group">
                 <label for="texto" class="col-sm-3 control-label">Nombre del producto: </label>
                 <div class="col-sm-5">
-                  <input type="text" class="form-control" id="texto" name="denominacion" value="{{ denominacion }}">
+                  <input type="text" class="form-control" id="texto" name="denominacion" value="$denominacion">
                 </div>
             </div>
             
@@ -38,7 +37,7 @@
                 <div class="col-sm-2">
                   <div class="input-group">
                     <div class="input-group-addon">€</div>
-                    <input type="text" class="form-control" id="precio" name="precio" value="{{ precio }}">
+                    <input type="text" class="form-control" id="precio" name="precio" value="$precio">
                   </div>
                 </div>
             </div>
