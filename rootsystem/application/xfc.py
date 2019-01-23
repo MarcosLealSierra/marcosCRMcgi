@@ -18,5 +18,6 @@ if not error_module and hasattr(controller, RESOURCE):
     error_resource = False
 
 if error_module or error_resource:
-    error_header = "{}{}\n".format(HTTP_404, HTTP_HTML)
-    print error_header if SHOW_ERROR_404 else HTTP_REDIRECT
+    error_header = "{}\n{}\n{}".format(HTTP_HTML, HTTP_404, "")
+    location_header = "{}\n\n".format(HTTP_REDIRECT)
+    print error_header if SHOW_ERROR_404 else location_header
