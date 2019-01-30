@@ -171,5 +171,5 @@ class ProductoController(object):
 
     def listar(self):
 	c = Collector()
-        c.get(MODULE)	
+        c.get("Producto")	
 	self.view.listar(c.coleccion)
