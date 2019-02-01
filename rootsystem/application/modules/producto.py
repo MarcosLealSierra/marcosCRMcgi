@@ -29,12 +29,16 @@ class Producto(object):
         )
         self.producto_id = DBQuery(db_data).execute(sql)
 
-    def delete(self):
-        sql = "DELETE FROM producto WHERE producto_id = {}".format(
-            self.producto_id
-	)
-        DBQuery(db_data).execute(sql)
+    def select(self):
+        sql = """
+            SELECT      denominacion, precio
+            FROM        producto
+            WHERE       producto_id = {}""".format(self.producto_id)
+        resultados = DBQuery(db_data).execute(sql)[0]
 
+        self.denominacion = resultados[0]
+        self.precio = resultados[1] 
+    
     def update(self):
         sql = """
             UPDATE      producto
@@ -47,16 +51,12 @@ class Producto(object):
         )
         DBQuery(db_data).execute(sql)
 
-    def select(self):
-        sql = """
-            SELECT      denominacion, precio
-            FROM        producto
-            WHERE       producto_id = {}""".format(self.producto_id)
-        resultados = DBQuery(db_data).execute(sql)[0]
+    def delete(self):
+        sql = "DELETE FROM producto WHERE producto_id = {}".format(
+            self.producto_id
+	)
+        DBQuery(db_data).execute(sql)
 
-        self.denominacion = resultados[0]
-        self.precio = resultados[1]
-        
 
 class ProductoView(object):
 
@@ -113,7 +113,6 @@ class ProductoView(object):
 	print HTTP_HTML
 	print ""       
 	print Template(TEMPLATE_PATH).render_inner(contenido)
-
 
 
 class ProductoController(object):
