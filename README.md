@@ -1,6 +1,9 @@
 # marcosCRMcgi
+![License](https://img.shields.io/badge/License-GPL3-blue.svg)
 
-1. [Introduction](#introduction)
+Table of Contents
+----------------------------
+* [Introduction](#introduction)
 
 ## Introduction
 
