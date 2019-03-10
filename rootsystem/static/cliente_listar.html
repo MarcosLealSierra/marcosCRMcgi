@@ -1,0 +1,58 @@
+      <div class="panel panel-primary">
+      
+      <script type="text/javascript" charset="utf-8">
+          $(document).ready(function() {
+              $('#example').DataTable();
+          });
+      </script>
+      
+        <!-- PANEL CABECERA DEL FORMULARIO -->
+        <div class="panel-heading">
+          <h4><span class="glyphicon glyphicon-task"></span> clientes</h4>
+        </div>
+
+
+        <div class="panel-body">
+            <table id="example" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Denominacion</th>
+                        <th>Nif</th>
+                        <th>Calle</th>
+                        <th>Numero</th>
+                        <th>Planta</th>
+                        <th>Puerta</th>
+                        <th>Ciudad</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--fila-->
+                    <tr>
+                        <td>$cliente_id</td>
+                        <td><a href="/cliente/ver/$cliente_id" title="Ver cliente"> $denominacion</a></td>
+                        <td>$nif</td>
+                        <td>$calle</td>
+                        <td>$numero</td>
+                        <td>$planta</td>
+                        <td>$puerta</td>
+                        <td>$ciudad</td>
+                        <td class="text-center">
+                            <a href="/cliente/ver/$cliente_id" class="btn btn-info btn-sm" 
+                            title="Ver cliente"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>
+                            <a href="/cliente/editar/$cliente_id" class="btn btn-warning btn-sm"
+                            title="Editar cliente"><i class="glyphicon glyphicon-pencil"></i> Editar</a>
+                            <a href="/cliente/eliminar/$cliente_id" class="btn btn-danger btn-sm" 
+                            title="Eliminar cliente"><i class="glyphicon glyphicon-trash"></i> Borrar</a>
+                            </td>
+                    </tr>
+                    <!--fila-->
+                </tbody>
+            </table>
+
+            <p><a href="/cliente/agregar" class="btn btn-success" 
+                            title="Agregar cliente"><i class="glyphicon glyphicon-plus"></i> Agregar nuevo</a>
+            </p>
+        </div> 
+      </div>
