@@ -1,8 +1,9 @@
 from core.db import DBQuery
+from core.stdobject import StdObject
 from settings import db_data
 
 
-class Domicilio(object):   # compositor: compone a...
+class Domicilio(StdObject):
 
     def __init__(self):
         self.domicilio_id = 0

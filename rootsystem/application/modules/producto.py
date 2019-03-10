@@ -7,11 +7,12 @@ from re import sub
 from core.db import DBQuery
 from core.collector import Collector
 from core.render import Template
+from core.stdobject import StdObject
 from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
         STATIC_PATH, TEMPLATE_PATH
 
 
-class Producto(object):
+class Producto(StdObject):
 
     def __init__(self):
         self.producto_id = 0
@@ -51,12 +52,6 @@ class Producto(object):
         )
         DBQuery(db_data).execute(sql)
 
-    def delete(self):
-        sql = "DELETE FROM producto WHERE producto_id = {}".format(
-            self.producto_id
-	)
-        DBQuery(db_data).execute(sql)
-
 
 class ProductoView(object):
 
@@ -90,7 +85,7 @@ class ProductoView(object):
 	ficha = sub(regex, '', form)
 
         diccionario = vars(producto)
-        ficha = Template(base=form).render(diccionario)
+        ficha = Template(base=ficha).render(diccionario)
 
         print HTTP_HTML
         print ""

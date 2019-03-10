@@ -4,12 +4,13 @@ from re import sub
 from core.db import DBQuery
 from core.collector import Collector
 from core.render import Template
+from core.stdobject import StdObject
 from domicilio import Domicilio
 from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
         STATIC_PATH, TEMPLATE_PATH
 
 
-class Cliente(object):        # compuesto: se compone de...
+class Cliente(StdObject):
 
     def __init__(self):
         self.cliente_id = 0
