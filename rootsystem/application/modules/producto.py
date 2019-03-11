@@ -156,7 +156,7 @@ class ProductoController(object):
 
     def eliminar(self):
         self.model.producto_id = ARG
-        self.model.delete()
+        self.model.delete(self.model.producto_id)
         
         print HTTP_HTML
         print "Location: {}/producto/listar".format(HOST)

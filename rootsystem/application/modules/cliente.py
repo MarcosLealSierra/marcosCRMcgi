@@ -166,7 +166,7 @@ class ClienteController(object):
 
     def eliminar(self):
         self.model.cliente_id = ARG
-        self.model.delete()
+        self.model.delete(self.model.cliente_id)
         
         print HTTP_HTML
         print "Location: {}/cliente/listar".format(HOST)
