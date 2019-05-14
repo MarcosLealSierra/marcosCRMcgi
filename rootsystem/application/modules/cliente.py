@@ -3,46 +3,48 @@ from re import sub
 
 from core.db import DBQuery
 from core.collector import Collector
+from core.helpers import compose
 from core.render import Template
 from core.stdobject import StdObject
 from domicilio import Domicilio
 from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
-        STATIC_PATH, TEMPLATE_PATH
+    STATIC_PATH, TEMPLATE_PATH
 
 
 class Cliente(StdObject):
 
-    def __init__(self):
+    def __init__(self, domicilio=None):
         self.cliente_id = 0
         self.denominacion = ''
 	self.nif = ''
-        self.domicilio = Domicilio()
+        self.domicilio = compose(domicilio, Domicilio)
+        #self.pedido_collection = []
+
+    def add_pedido(self, pedido):
+        self.pedido_collection.append(compose(pedido, Pedido))
     
-    def insert(self):       # = update
+    def insert(self):
         sql = """
             INSERT INTO cliente (denominacion, nif, domicilio) 
             VALUES            ('{}', '{}', {})
-        """.format(self.denominacion, self.nif, self.domicilio.domicilio_id)
+        """.format(
+            self.denominacion, 
+            self.nif, 
+            self.domicilio.domicilio_id
+        
         self.cliente_id = DBQuery(db_data).execute(sql)
 
-    def select(self):
-        sql = """
-            SELECT  denominacion, nif, domicilio 
-            FROM    cliente 
-            WHERE   cliente_id = {}
-        """.format(self.cliente_id)
-        resultados = DBQuery(db_data).execute(sql)[0]
-        self.denominacion = resultados[0]
-	self.nif = resultados[1]
-        self.domicilio.domicilio_id = resultados[2]
-        self.domicilio.select()
-    
     def update(self):
         sql = """
             UPDATE      cliente
             SET         denominacion = '{}', nif = '{}', domicilio = {}
             WHERE       cliente_id = {}
-        """.format(self.denominacion, self.nif, self.domicilio.domicilio_id)
+        """.format(
+            self.denominacion, 
+            self.nif, 
+            self.domicilio.domicilio_id,
+            self.cliente_id
+        )
         DBQuery(db_data).execute(sql)
 
 
@@ -88,7 +90,9 @@ class ClienteView(object):
 
     def listar(self, coleccion):
 	pila = []
-	tabla = Template('{}/cliente_listar.html'.format(STATIC_PATH)).get_template()
+	tabla = Template(
+            '{}/cliente_listar.html'.format(STATIC_PATH)
+        ).get_template()
 	fila = Template(base=tabla).extract('fila')
 
 	for cliente in coleccion:
@@ -118,6 +122,7 @@ class ClienteController(object):
     def guardar(self):
         formulario = FieldStorage()
 
+        self.model.domicilio = Domicilio()
         self.model.domicilio.calle = formulario['calle'].value
         self.model.domicilio.numero = formulario['numero'].value
         self.model.domicilio.planta = formulario['planta'].value
@@ -135,13 +140,13 @@ class ClienteController(object):
         print ""
 
     def ver(self):
-        self.model.cliente_id = ARG 
+        self.model.cliente_id = int(ARG) 
         self.model.select()
 
         self.view.ver(self.model)
 
     def editar(self):
-        self.model.cliente_id = ARG
+        self.model.cliente_id = int(ARG)
         self.model.select()
         
         self.view.editar(self.model)
@@ -149,14 +154,17 @@ class ClienteController(object):
     def actualizar(self):
         formulario = FieldStorage()
         self.model.cliente_id = formulario['cliente_id'].value
+        self.model.select()
         self.model.nif = formulario['nif'].value
-        self.model.domicilio.domicilio_id = self.model.domicilio
+        self.model.denominacion = formulario['denominacion'].value
+        
         self.model.domicilio.calle = formulario['calle'].value
         self.model.domicilio.numero = formulario['numero'].value
         self.model.domicilio.planta = formulario['planta'].value
         self.model.domicilio.puerta = formulario['puerta'].value
         self.model.domicilio.ciudad = formulario['ciudad'].value
         self.model.domicilio.update()
+
         self.model.update()
         
         print HTTP_HTML
@@ -165,7 +173,7 @@ class ClienteController(object):
         print ""
 
     def eliminar(self):
-        self.model.cliente_id = ARG
+        self.model.cliente_id = int(ARG)
         self.model.delete()
         
         print HTTP_HTML
