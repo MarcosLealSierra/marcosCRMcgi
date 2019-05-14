@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from cgi import FieldStorage
 from re import sub
 
@@ -9,7 +6,7 @@ from core.collector import Collector
 from core.render import Template
 from core.stdobject import StdObject
 from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
-        STATIC_PATH, TEMPLATE_PATH
+    STATIC_PATH, TEMPLATE_PATH
 
 
 class Producto(StdObject):
@@ -25,20 +22,10 @@ class Producto(StdObject):
                             (denominacion, precio)
             VALUES          ('{}', {})
         """.format(
-                self.denominacion,
-                self.precio
+            self.denominacion,
+            self.precio
         )
         self.producto_id = DBQuery(db_data).execute(sql)
-
-    def select(self):
-        sql = """
-            SELECT      denominacion, precio
-            FROM        producto
-            WHERE       producto_id = {}""".format(self.producto_id)
-        resultados = DBQuery(db_data).execute(sql)[0]
-
-        self.denominacion = resultados[0]
-        self.precio = resultados[1] 
     
     def update(self):
         sql = """
@@ -46,9 +33,9 @@ class Producto(StdObject):
             SET         denominacion = '{}', precio = {}
             WHERE       producto_id = {}
         """.format(
-                self.denominacion,
-                self.precio,
-                self.producto_id
+            self.denominacion, 
+            self.precio, 
+            self.producto_id
         )
         DBQuery(db_data).execute(sql)
 
@@ -93,7 +80,9 @@ class ProductoView(object):
 
     def listar(self, coleccion):
 	pila = []
-	tabla = Template('{}/producto_listar.html'.format(STATIC_PATH)).get_template()
+	tabla = Template(
+            '{}/producto_listar.html'.format(STATIC_PATH)
+        ).get_template()
 	fila = Template(base=tabla).extract('fila')
 
 	for producto in coleccion:
