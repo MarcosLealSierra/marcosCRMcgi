@@ -43,11 +43,11 @@ class Producto(StdObject):
 class ProductoView(object):
 
     def agregar(self):
-	with open("{}/producto_agregar.html".format(STATIC_PATH), "r") as f:
-	    form = f.read()
+        with open("{}/producto_agregar.html".format(STATIC_PATH), "r") as f:
+            form = f.read()
 
-	regex = "<!-- errores -->(.|\n)+<!-- errores -->"
-	form = sub(regex, '', form)
+        regex = "<!-- errores -->(.|\n)+<!-- errores -->"
+        form = sub(regex, '', form)
 
 	print HTTP_HTML
 	print ""

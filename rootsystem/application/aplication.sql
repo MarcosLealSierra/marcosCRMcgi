@@ -18,6 +18,32 @@ CREATE TABLE IF NOT EXISTS cliente (
     denominacion VARCHAR(45),
     nif VARCHAR(15),
     domicilio INT(11),
-    FOREIGN KEY(domicilio) REFERENCES domicilio(domicilio_id) ON DELETE SET NULL
+    FOREIGN KEY(domicilio) 
+        REFERENCES domicilio(domicilio_id) 
+        ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS pedido (
+    pedido_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    estado INT(1),
+    fecha DATE,
+    cliente INT(11) NOT NULL,
+    INDEX(cliente),
+    FOREIGN KEY(cliente) 
+        REFERENCES cliente(cliente_id) 
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS productopedido (
+	productopedido_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    compuesto INT(11) NOT NULL,
+    FOREIGN KEY (compuesto)
+        REFERENCES pedido(pedido_id)
+        ON DELETE CASCADE,
+    INDEX(compuesto),
+    compositor INT(11) NOT NULL,
+    FOREIGN KEY (compositor)
+        REFERENCES producto(producto_id)
+        ON DELETE cascade,
+    fm INT(3)
+) ENGINE=InnoDB;

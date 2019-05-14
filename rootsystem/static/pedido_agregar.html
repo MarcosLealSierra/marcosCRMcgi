@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Datalist</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+   
+    <style>
+        body { padding-top: 60px; margin-bottom: 60px; } 
+    </style>
+
+    <!-- Javascript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    
+     
+  </head>
+  <body>
+  
+  <div class="container"> 
+    <div class="starter-template">
+      
+      <!-- contenido -->
+      <div class="panel panel-primary">
+      
+        <!-- PANEL CABECERA DEL FORMULARIO -->
+        <div class="panel-heading">
+          <h4><span class="glyphicon glyphicon-pencil"></span> Searchable input</h4>
+        </div>
+
+
+        <div class="panel-body">
+          <script type="text/javascript" language="javascript">
+                // FUNCIONES AGREGAR MAS 
+                function agregar() {
+                    var padre = document.getElementById('padre');
+                    var hijo = padre.lastElementChild;
+                    var capa = document.createElement('div');
+                    capa.setAttribute('class', 'form-group hijo');
+                    padre.appendChild(capa);
+                    padre.lastElementChild.innerHTML = hijo.innerHTML;
+                }
+
+                function eliminar(elemento) {
+                    var hijo = elemento.parentNode.parentNode;
+                    var padre = document.getElementById('padre');
+                    var n = padre.children.length;
+                    if(n > 1) { 
+                        padre.removeChild(hijo); 
+                    } else {
+                        hijo.children[1].children[0].value = '';
+                    }   
+                }
+                
+                // FUNCIONES DATALIST
+                function changedata(elemento) {
+                    var dl = document.getElementById('productos');
+
+                    for(i=0; i < dl.options.length; i++) {
+                        if(dl.options[i].value == elemento.value) {
+                            elemento.value = dl.options[i].text;
+                            elemento.setAttribute('data-id', dl.options[i].value);
+                        }
+                    }
+                    update_data();
+                }
+                
+                function update_data() {
+                    var productos = document.getElementsByName('producto');
+                    var productos_id = document.getElementsByName('producto_id');
+                    
+                    for(i=0; i < productos.length; i++) {
+                        productos_id[i].value = productos[i].getAttribute('data-id');
+                    }
+                }
+            </script>
+          <form class="form-horizontal" method="post" action="/pedido/guardar">
+                   
+            <!-- CAMPO DE TEXTO -->
+            <div class="form-group">
+                <div class="col-sm-1">Cant.</div>
+                <div class="col-sm-8">Producto</div>
+                <div class="col-sm-3">&nbsp;</div>
+            </div>
+            
+           
+            <datalist id="productos">
+                <option value="26">Agua Mineral Glaciar</option>
+                <option value="27">Autobronceador Rayito de sol</option>
+                <!--<option value="3">Pañuelo descartable</option>-->
+                <!--<option value="24">Bronceador</option>-->
+                <!--<option value="5">Lápiz negro HB</option>-->
+                <!--<option value="36">Pantalón cargo</option>-->
+                <!--<option value="7">Pantalón de vestir</option>-->
+                <!--<option value="8">Falda</option>-->
+                <!--<option value="9">Algo vendible</option>-->
+                <!--<option value="19">Otra cosa más</option>-->
+            </datalist>
+            
+            
+            <!-- agregarmás -->
+            <div id="padre"> 
+                <div class="form-group hijo">
+                    <div class="col-sm-1">
+                        <input type="text" name="cantidad" value="1" class="form-control">
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="hidden" name="producto_id">
+                        <input type="text" name="producto" list="productos" oninput="changedata(this)" 
+                            class="form-control" autocomplete="off">
+                    </div>
+                    <div class="col-sm-3">
+                        <button type="button" class="btn btn-success btn-sm" onclick="agregar()"><i 
+                            class="glyphicon glyphicon-plus"></i></button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="eliminar(this)"><i 
+                            class="glyphicon glyphicon-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+            <!-- agregarmás -->
+
+            
+            <!-- BOTÓN -->
+            <div class="form-group">
+                <div class="col-sm-5">
+                  <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+            
+
+          </form>
+        </div>
+      
+      </div>
+      <!-- contenido -->
+
+
+    </div>
+  </div>
+ 
+  </body>
+</html>
+
