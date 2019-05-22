@@ -59,27 +59,27 @@ class LoglConnector(object):
         sql = "{}{}".format(sql, ", ".join(tuplas))
         DBQuery(db_data).execute(sql)
 
-    #def select(self):
-        #sql = """
-            #SELECT compositor, fm
-            #FROM {compositor}{compuesto}
-            #WHERE compuesto = {pi}
-        #""".format(
-            #compositor=self._compositor,
-            #compuesto=self._clase_compuesto,
-            #pi=self.compuesto.__dict__[propiedad_id_compuesto]
-        #)
-        #resultados = DBQuery(db_data).execute(sql)
-
-        #modulo_compositor = __import__(
-            #'modules.{}'.format(compositor), 
-            #fromlist=['{}'.format(compositor.capitalize())]
-        #)
+    def select(self):
+        sql = """
+            SELECT  compositor, fm
+            FROM    {compositor}{compuesto}
+            WHERE   compuesto = {pi}
+        """.format(
+                compositor=self._compositor,
+                compuesto=self._clase_compuesto,
+                pi=self.compuesto.__dict__[self._propiedad_id_compuesto]
+            )
+        resultados = DBQuery(db_data).execute(sql)
         
-        #for resultado in resultados:
-            #obj_compositor = getattr(modulo_compositor, compositor.capitalize())() #Producto() 
-            #obj_compositor.__dict__[propiedad_id_compositor] = resultado[0]
-            #obj_compositor.select()
-            #colectora = '{}_collection'.format(compositor)
-            #self.compuesto.__dict__[colectora].append(obj_compositor)
-            #obj_compositor.fm = resultado[1]
+        modulo = __import__(
+            'modules.{}'.format(self._compositor),
+            fromlist=[self._compositor.capitalize()]
+        )
+
+        for resultado in resultados:
+            obj_compositor = getattr(modulo, self._compositor.capitalize())()
+            setattr(obj_compositor, self._propiedad_id_compositor, resultado[0])
+            obj_compositor.select()
+            colectora = '{}_collection'.format(self._compositor)
+            self.compuesto.__dict__[colectora].append(obj_compositor)
+            obj_compositor.fm = resultado[1]
