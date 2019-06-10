@@ -31,6 +31,7 @@ class Cliente(StdObject):
             self.denominacion, 
             self.nif, 
             self.domicilio.domicilio_id
+        )
         
         self.cliente_id = DBQuery(db_data).execute(sql)
 
