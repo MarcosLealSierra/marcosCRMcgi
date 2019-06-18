@@ -3,6 +3,7 @@ from re import sub
 
 from core.db import DBQuery
 from core.collector import Collector
+from core.controller import Controller
 from core.render import Template
 from core.stdobject import StdObject
 from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
@@ -99,12 +100,8 @@ class ProductoView(object):
 	print Template(TEMPLATE_PATH).render_inner(contenido)
 
 
-class ProductoController(object):
-    
-    def __init__(self):
-        self.model = Producto()
-        self.view = ProductoView()
-    
+class ProductoController(Controller):
+
     def agregar(self):
         self.view.agregar()
 
