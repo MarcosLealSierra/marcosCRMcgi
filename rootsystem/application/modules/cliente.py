@@ -23,30 +23,8 @@ class Cliente(StdObject):
     def add_pedido(self, pedido):
         self.pedido_collection.append(compose(pedido, Pedido))
     
-    def insert(self):
-        sql = """
-            INSERT INTO cliente (denominacion, nif, domicilio) 
-            VALUES            ('{}', '{}', {})
-        """.format(
-            self.denominacion, 
-            self.nif, 
-            self.domicilio.domicilio_id
-        )
-        
-        self.cliente_id = DBQuery(db_data).execute(sql)
-
-    def update(self):
-        sql = """
-            UPDATE      cliente
-            SET         denominacion = '{}', nif = '{}', domicilio = {}
-            WHERE       cliente_id = {}
-        """.format(
-            self.denominacion, 
-            self.nif, 
-            self.domicilio.domicilio_id,
-            self.cliente_id
-        )
-        DBQuery(db_data).execute(sql)
+    def select(self):
+        super(Cliente, self).select()
 
 
 class ClienteView(object):

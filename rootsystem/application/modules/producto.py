@@ -17,29 +17,6 @@ class Producto(StdObject):
         self.denominacion = ''
         self.precio = 0.0
     
-    def insert(self):
-        sql = """
-            INSERT INTO     producto 
-                            (denominacion, precio)
-            VALUES          ('{}', {})
-        """.format(
-            self.denominacion,
-            self.precio
-        )
-        self.producto_id = DBQuery(db_data).execute(sql)
-    
-    def update(self):
-        sql = """
-            UPDATE      producto
-            SET         denominacion = '{}', precio = {}
-            WHERE       producto_id = {}
-        """.format(
-            self.denominacion, 
-            self.precio, 
-            self.producto_id
-        )
-        DBQuery(db_data).execute(sql)
-
 
 class ProductoView(object):
 
