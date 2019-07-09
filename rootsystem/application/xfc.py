@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
 from os.path import isfile
@@ -20,4 +20,4 @@ if not error_module and hasattr(controller, RESOURCE):
 if error_module or error_resource:
     error_header = "{}\n{}\n{}".format(HTTP_HTML, HTTP_404, "")
     location_header = "{}\n\n".format(HTTP_REDIRECT)
-    print error_header if SHOW_ERROR_404 else location_header
+    print(error_header if SHOW_ERROR_404 else location_header)

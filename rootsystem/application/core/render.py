@@ -27,5 +27,5 @@ class Template:
 
     def extract(self, tag):
         regex = "<!--{t}-->(.|\n)+<!--{t}-->".format(t=tag)
-	code = search(regex, self.template).group(0)
+        code = search(regex, self.template).group(0)
         return code

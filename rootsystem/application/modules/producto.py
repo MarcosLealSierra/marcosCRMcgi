@@ -27,54 +27,54 @@ class ProductoView(object):
         regex = "<!-- errores -->(.|\n)+<!-- errores -->"
         form = sub(regex, '', form)
 
-	print HTTP_HTML
-	print ""
-	print Template(TEMPLATE_PATH).render_inner(form)
+        print(HTTP_HTML)
+        print("")
+        print(Template(TEMPLATE_PATH).render_inner(form))
 
     def ver(self, producto):
-	with open("{}/producto_ver.html".format(STATIC_PATH), "r") as f:
-	    ficha = f.read()
+        with open("{}/producto_ver.html".format(STATIC_PATH), "r") as f:
+            ficha = f.read()
 
         diccionario = vars(producto)
         ficha = Template(base=ficha).render(diccionario)
 
-        print HTTP_HTML
-        print ""
-        print Template(TEMPLATE_PATH).render_inner(ficha)
+        print(HTTP_HTML)
+        print("")
+        print(Template(TEMPLATE_PATH).render_inner(ficha))
 
     def editar(self, producto):
-	with open("{}/producto_editar.html".format(STATIC_PATH), "r") as f:
-	    form = f.read()
+        with open("{}/producto_editar.html".format(STATIC_PATH), "r") as f:
+            form = f.read()
 
-	regex = "<!-- errores -->(.|\n)+<!-- errores -->"
-	ficha = sub(regex, '', form)
+        regex = "<!-- errores -->(.|\n)+<!-- errores -->"
+        ficha = sub(regex, '', form)
 
         diccionario = vars(producto)
         ficha = Template(base=ficha).render(diccionario)
 
-        print HTTP_HTML
-        print ""
-        print Template(TEMPLATE_PATH).render_inner(ficha)
+        print(HTTP_HTML)
+        print("")
+        print(Template(TEMPLATE_PATH).render_inner(ficha))
 
     def listar(self, coleccion):
-	pila = []
-	tabla = Template(
+        pila = []
+        tabla = Template(
             '{}/producto_listar.html'.format(STATIC_PATH)
         ).get_template()
-	fila = Template(base=tabla).extract('fila')
+        fila = Template(base=tabla).extract('fila')
 
-	for producto in coleccion:
-	    diccionario = vars(producto)
-	    render = Template(base=fila).render(diccionario)
-	    pila.append(render)
+        for producto in coleccion:
+            diccionario = vars(producto)
+            render = Template(base=fila).render(diccionario)
+            pila.append(render)
 
-	pila = ''.join(pila)
+        pila = ''.join(pila)
 
-	contenido = tabla.replace(fila, pila)
+        contenido = tabla.replace(fila, pila)
 
-	print HTTP_HTML
-	print ""       
-	print Template(TEMPLATE_PATH).render_inner(contenido)
+        print(HTTP_HTML)
+        print("")
+        print(Template(TEMPLATE_PATH).render_inner(contenido))
 
 
 class ProductoController(Controller):
@@ -88,10 +88,10 @@ class ProductoController(Controller):
         self.model.precio = formulario['precio'].value
         self.model.insert()
 
-        print HTTP_HTML
-        print "Location: {}/producto/ver/{}".format(HOST, self.model.producto_id)
-        print ""
-        print ""
+        print(HTTP_HTML)
+        print("Location: {}/producto/ver/{}".format(HOST, self.model.producto_id))
+        print("")
+        print("")
 
     def ver(self):
         self.model.producto_id = ARG 
@@ -112,21 +112,21 @@ class ProductoController(Controller):
         self.model.precio = formulario['precio'].value
         self.model.update()
         
-        print HTTP_HTML
-        print "Location: {}/producto/ver/{}".format(HOST, self.model.producto_id)
-        print ""
-        print ""
+        print(HTTP_HTML)
+        print("Location: {}/producto/ver/{}".format(HOST, self.model.producto_id))
+        print("")
+        print("")
 
     def eliminar(self):
         self.model.producto_id = ARG
         self.model.delete()
         
-        print HTTP_HTML
-        print "Location: {}/producto/listar".format(HOST)
-        print ""
-        print ""
+        print(HTTP_HTML)
+        print("Location: {}/producto/listar".format(HOST))
+        print("")
+        print("")
 
     def listar(self):
-	c = Collector()
+        c = Collector()
         c.get("Producto")	
-	self.view.listar(c.coleccion)
+        self.view.listar(c.coleccion)

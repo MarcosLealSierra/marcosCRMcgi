@@ -6,7 +6,8 @@ from core.collector import Collector
 from core.helpers import compose
 from core.render import Template
 from core.stdobject import StdObject
-from domicilio import Domicilio
+from modules.domicilio import Domicilio
+from modules.pedido import Pedido
 from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
     STATIC_PATH, TEMPLATE_PATH
 
@@ -16,7 +17,7 @@ class Cliente(StdObject):
     def __init__(self, domicilio=None):
         self.cliente_id = 0
         self.denominacion = ''
-	self.nif = ''
+        self.nif = ''
         self.domicilio = compose(domicilio, Domicilio)
         #self.pedido_collection = []
 
@@ -25,68 +26,77 @@ class Cliente(StdObject):
     
     def select(self):
         super(Cliente, self).select()
+        #pedido = Pedido()
+        #pedidos = pedido.get_pedidos(self.cliente_id)
 
+        #for tupla in pedidos:
+            #pedido = Pedido()
+            #pedido.pedido_id = tupla[0]
+            #pedido.select()
+            #self.pedido_collection.append(pedido)
+
+        #print HTTP_HTML
+        #print ""
+        #print pedidos
+        #print self.pedido_collection
+        
 
 class ClienteView(object):
     
     def agregar(self):
         with open("{}/cliente_agregar.html".format(STATIC_PATH), "r") as f:
-	    form = f.read()
+            form = f.read()
 
-	regex = "<!-- errores -->(.|\n)+<!-- errores -->"
-	form = sub(regex, '', form)
+        regex = "<!-- errores -->(.|\n)+<!-- errores -->"
+        form = sub(regex, '', form)
 
-	print HTTP_HTML
-	print ""
-	print Template(TEMPLATE_PATH).render_inner(form)
+        print(HTTP_HTML, "\n")
+        print(Template(TEMPLATE_PATH).render_inner(form))
     
     def ver(self, cliente):
         with open("{}/cliente_ver.html".format(STATIC_PATH), "r") as f:
-	    ficha = f.read()
+            ficha = f.read()
 
         diccionario = vars(cliente)
         diccionario.update(vars(cliente.domicilio))
         ficha = Template(base=ficha).render(diccionario)
 
-        print HTTP_HTML
-        print ""
-        print Template(TEMPLATE_PATH).render_inner(ficha)
+        print(HTTP_HTML, "\n")
+        print(Template(TEMPLATE_PATH).render_inner(ficha))
 
     def editar(self, cliente):
-	with open("{}/cliente_editar.html".format(STATIC_PATH), "r") as f:
-	    form = f.read()
+        with open("{}/cliente_editar.html".format(STATIC_PATH), "r") as f:
+            form = f.read()
 
-	regex = "<!-- errores -->(.|\n)+<!-- errores -->"
-	ficha = sub(regex, '', form)
+        regex = "<!-- errores -->(.|\n)+<!-- errores -->"
+        ficha = sub(regex, '', form)
 
         diccionario = vars(cliente)
         diccionario.update(vars(cliente.domicilio))
         ficha = Template(base=ficha).render(diccionario)
 
-        print HTTP_HTML
-        print ""
-        print Template(TEMPLATE_PATH).render_inner(ficha)
+        print(HTTP_HTML, "\n")
+        print(Template(TEMPLATE_PATH).render_inner(ficha))
 
     def listar(self, coleccion):
-	pila = []
-	tabla = Template(
+        pila = []
+        tabla = Template(
             '{}/cliente_listar.html'.format(STATIC_PATH)
         ).get_template()
-	fila = Template(base=tabla).extract('fila')
+        fila = Template(base=tabla).extract('fila')
 
-	for cliente in coleccion:
-	    diccionario = vars(cliente)
+        for cliente in coleccion:
+            diccionario = vars(cliente)
             diccionario.update(vars(cliente.domicilio))
-	    render = Template(base=fila).render(diccionario)
-	    pila.append(render)
+            render = Template(base=fila).render(diccionario)
+            pila.append(render)
 
-	pila = ''.join(pila)
+        pila = ''.join(pila)
 
-	contenido = tabla.replace(fila, pila)
+        contenido = tabla.replace(fila, pila)
 
-	print HTTP_HTML
-	print ""       
-	print Template(TEMPLATE_PATH).render_inner(contenido)
+        print(HTTP_HTML, "\n")
+        print(Template(TEMPLATE_PATH).render_inner(contenido))
 
 
 class ClienteController(object):
@@ -113,10 +123,10 @@ class ClienteController(object):
         self.model.nif = formulario['nif'].value
         self.model.insert()
 
-        print HTTP_HTML
-        print "Location: {}/cliente/ver/{}".format(HOST, self.model.cliente_id)
-        print ""
-        print ""
+        print(HTTP_HTML)
+        print("Location: {}/cliente/ver/{}".format(HOST, self.model.cliente_id))
+        print("")
+        print("")
 
     def ver(self):
         self.model.cliente_id = int(ARG) 
@@ -136,7 +146,7 @@ class ClienteController(object):
         self.model.select()
         self.model.nif = formulario['nif'].value
         self.model.denominacion = formulario['denominacion'].value
-        
+
         self.model.domicilio.calle = formulario['calle'].value
         self.model.domicilio.numero = formulario['numero'].value
         self.model.domicilio.planta = formulario['planta'].value
@@ -146,21 +156,21 @@ class ClienteController(object):
 
         self.model.update()
         
-        print HTTP_HTML
-        print "Location: {}/cliente/ver/{}".format(HOST, self.model.cliente_id)
-        print ""
-        print ""
+        print(HTTP_HTML)
+        print("Location: {}/cliente/ver/{}".format(HOST, self.model.cliente_id))
+        print("")
+        print("")
 
     def eliminar(self):
         self.model.cliente_id = int(ARG)
         self.model.delete()
         
-        print HTTP_HTML
-        print "Location: {}/cliente/listar".format(HOST)
-        print ""
-        print ""
+        print(HTTP_HTML)
+        print("Location: {}/cliente/listar".format(HOST))
+        print("")
+        print("")
 
     def listar(self):
-	c = Collector()
+        c = Collector()
         c.get("Cliente")
-	self.view.listar(c.coleccion)
+        self.view.listar(c.coleccion)
