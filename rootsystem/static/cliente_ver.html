@@ -1,28 +1,161 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>MarcosCRMcgi</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/r/bs-3.3.5/jq-2.1.4,dt-1.10.8/datatables.min.css">
+
+    <style>
+        body { padding-top: 60px; margin-bottom: 60px; } 
+    </style>
+
+    <!-- Javascript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <script type="text/javascript" 
+        src="https://cdn.datatables.net/r/bs-3.3.5/jqc-1.11.3,dt-1.10.8/datatables.min.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+            $('#example').DataTable();
+        });
+    </script>
+  </head>
+  <body>
+  
+  <div class="container"> 
+    <div class="starter-template">
+      
       <!-- contenido -->
       <div class="panel panel-primary">
       
         <!-- PANEL CABECERA DEL FORMULARIO -->
         <div class="panel-heading">
-          <h4><span class="glyphicon glyphicon-ok-sign"></span> <b>Cliente # $cliente_id agregado con éxito</b></h4>
+          <h4><b>Cliente N° $cliente_id</b></h4>
+        </div>
+
+        <div class="panel-body text-center">
+            <big><strong>$denominacion</strong></big><br>
+            <big>{cuit}</big>
+        </div>
+        
+        <div class="panel-footer text-right">
+            <a href="/cliente/editar/$cliente_id" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-pencil"></i> Editar</a>
+            <a href="/cliente/eliminar/$cliente_id" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-trash"></i> Borrar</a>
+        </div>
+      
+      </div>
+      
+      <div class="row">
+      
+      
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                  <h5><b>Domicilio</b></h5>
+                </div>
+                <div class="panel-body">
+                    $calle $numero<br>
+                    Piso $piso, Pta. $puerta<br>
+                    CP: $cp, $ciudad
+                </div>
+                <div class="panel-footer">
+                    <a href="/domicilio/editar/$domicilio_id" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-pencil"></i> Editar</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                  <h5><b>Información de contacto</b></h5>
+                </div>
+                <table class="table">
+                    <!--fila_dc-->
+                    <tr>
+                        <td class="text-right"><b>$denominacion:</b></td>
+                        <td>$valor</td>
+                        <td>
+                            <a href="/datodecontacto/editar/$datodecontacto_id" 
+                                class="btn-warning btn-sm"><i class="glyphicon glyphicon-pencil"></i></a>
+                            <a href="/datodecontacto/eliminar/$datodecontacto_id" 
+                                class="btn-danger btn-sm"><i class="glyphicon glyphicon-trash"></i></a>
+                        </td>
+                    </tr>
+                    <!--fila_dc-->
+                </table>
+                <div class="panel-footer">
+                    <a href="/datodecontacto/agregar/$cliente_id" 
+                        class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i> Agregar nuevo</a>
+                </div>
+            </div>
+        </div>
+      </div>
+      
+      
+      
+      <!-- contenido -->
+      <div class="panel panel-primary">
+      
+        <!-- PANEL CABECERA DEL FORMULARIO -->
+        <div class="panel-heading">
+          <h5><b>Historial de pedidos</b></h5>
         </div>
 
         <div class="panel-body">
             
-            <div class="col-md-12">
-              <h3>$denominacion &nbsp; <span class="label label-primary">$nif</span></h3> 
-            </div>
-
-            <div class="col-md-12">
-              <h4>Domicilio</h4>
-              $calle Nº$numero, $plantaº "$puerta" ($ciudad)
-            </div>
-          </div>
-
-        <div class="panel-footer">
-          <a href="/cliente/agregar"><i class="fas fa-plus"></i></a>&nbsp;&nbsp;
-          <a href="/cliente/editar/$cliente_id"><i class="far fa-edit"></i></a>&nbsp;&nbsp;
-          <a href="/cliente/eliminar/$cliente_id"><i class="far fa-trash-alt"></i></a>
+            
+            <table id="example" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-left">ID</th>
+                        <th class="text-left">Fecha</th>
+                        <th class="text-left">Productos</th>
+                        <th class="text-left">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--fila_hp-->
+                    <tr>
+                        <td class="text-left">$pedido_id</td>
+                        <td class="text-left"><a href="/pedido/ver/{pedido_id}" title="Ver pedido">$fecha</a></td>
+                        <td class="text-left">$cantidad</td>
+                        <td class="text-center">
+                            <a href="/pedido/ver/$pedido_id" class="btn btn-info btn-sm" 
+                            title="Ver Pedido"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>
+                        </td>
+                    </tr>
+                    <!--fila_hp-->
+                 
+                </tbody>
+            </table>
+            
+            
+        </div>
+        
+        <div class="panel-footer text-left">
+            <a href="/pedido/agregar/$cliente_id" class="btn btn-success btn-sm"><i 
+                class="glyphicon glyphicon-plus"></i> Agregar nuevo</a>
         </div>
       
       </div>
+      
+      
       <!-- contenido -->
+
+
+    </div>
+  </div>
+ 
+  </body>
+</html>
