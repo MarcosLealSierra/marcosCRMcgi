@@ -9,35 +9,55 @@ class StdObject(object):
         #clase = self.__class__.__name__.lower()
         #propiedades = vars(self).keys()
         #valores = vars(self).values()
-        #for i, v in enumerate(valores):
+        #lista_valores = list(valores)
+        #for i, v in enumerate(lista_valores):
             #if isinstance(v, str):
-                #valores[i] = "'{}'".format(v)
+                #lista_valores[i] = "'{}'".format(v)
+            #elif isinstance(v, int):
+                #pass
             #else:
-                #valores[i] = str(v)
+                #lista_valores[i] = str(v)
 
-	#sql = """
+        #sql = """
             #INSERT INTO     {c} 
                             #({p})
             #VALUES          ({v})
         #""".format(
                 #c=clase,
                 #p=", ".join(propiedades),
-                #v=", ".join(valores)
+                #v=", ".join(lista_valores)
             #)
 
         #self.__dict__['{}_id'.format(clase)] = DBQuery(db_data).execute(sql)
-
-    def delete(self):
+    
+    def select(self):
         clase = self.__class__.__name__.lower()
         propiedad_id = '{}_id'.format(clase)
+        
+        propiedades = vars(self).keys()
 
-        sql = "DELETE FROM {c} WHERE {c}_id = {pi}".format(
+        sql = "SELECT {p} FROM {c} WHERE {c}_id = {pi}".format(
+            p=", ".join(propiedades), 
             c=clase, 
             pi=self.__dict__[propiedad_id]
         )
-        DBQuery(db_data).execute(sql)
+        resultados = DBQuery(db_data).execute(sql)[0]
+        
+        for i, p in enumerate(propiedades):
+            compositor = "{}".format(p.capitalize())
+            compositor_id = '{}_id'.format(p)
+            archivo = "modules.{}".format(p)
 
-
+            if self.__dict__[p] is None:
+                modulo = __import__(archivo, fromlist=[compositor])
+                self.__dict__[p] = getattr(modulo, compositor)()
+                self.__dict__[p].__dict__[compositor_id] = resultados[i]
+                self.__dict__[p].select()
+            elif isinstance(self.__dict__[p], list):
+                pass
+            else:
+                self.__dict__[p] = resultados[i]
+    
     #def update(self):
         #clase = self.__class__.__name__.lower()
         #propiedad_id = "{}_id".format(clase)
@@ -60,35 +80,16 @@ class StdObject(object):
             #pi=self.__dict__[propiedad_id]
         #)
         
-        #print(HTTP_HTML)
-        #print("")
+        #print(HTTP_HTML, "\n")
         #print(sql, "<br><br>")
         #DBQuery(db_data).execute(sql)
 
-    def select(self):
+    def delete(self):
         clase = self.__class__.__name__.lower()
         propiedad_id = '{}_id'.format(clase)
-        
-        propiedades = vars(self).keys()
 
-        sql = "SELECT {p} FROM {c} WHERE {c}_id = {pi}".format(
-            p=", ".join(propiedades), 
+        sql = "DELETE FROM {c} WHERE {c}_id = {pi}".format(
             c=clase, 
             pi=self.__dict__[propiedad_id]
         )
-        resultados = DBQuery(db_data).execute(sql)[0]
-        
-        for i, p in enumerate(propiedades):
-            compositor = "{}".format(p.capitalize())
-            compositor_id = '{}_id'.format(p)
-            archivo = "modules.{}".format(p)
-
-            if self.__dict__[p] is None:
-                modulo = __import__(archivo, fromlist=[compositor])
-                self.__dict__[p] = getattr(modulo, compositor)()
-                self.__dict__[p].__dict__[compositor_id] = resultados[i]  # self.__dict__[p] es un OBJ
-                self.__dict__[p].select()
-            elif isinstance(self.__dict__[p], list):
-                pass
-            else:
-                self.__dict__[p] = resultados[i]
+        DBQuery(db_data).execute(sql)
