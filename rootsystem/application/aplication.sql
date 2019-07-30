@@ -23,6 +23,17 @@ CREATE TABLE IF NOT EXISTS cliente (
         ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS datodecontacto (
+    datodecontacto_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    denominacion VARCHAR(30),
+    valor VARCHAR(30),
+    cliente INT(11) NOT NULL,
+    INDEX(cliente),
+    FOREIGN KEY(cliente) 
+        REFERENCES cliente(cliente_id) 
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 CREATE TABLE IF NOT EXISTS pedido (
     pedido_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     estado INT(1),
