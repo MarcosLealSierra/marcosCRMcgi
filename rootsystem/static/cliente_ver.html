@@ -1,39 +1,14 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>MarcosCRMcgi</title>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/r/bs-3.3.5/jq-2.1.4,dt-1.10.8/datatables.min.css">
-
-    <style>
-        body { padding-top: 60px; margin-bottom: 60px; } 
-    </style>
-
-    <!-- Javascript -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    
-    <script type="text/javascript" 
-        src="https://cdn.datatables.net/r/bs-3.3.5/jqc-1.11.3,dt-1.10.8/datatables.min.js"></script>
-
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function() {
-            $('#example').DataTable();
-        });
-    </script>
-  </head>
-  <body>
-  
-  <div class="container"> 
-    <div class="starter-template">
-      
       <!-- contenido -->
+      <style>
+          body { padding-top: 60px; margin-bottom: 60px; } 
+      </style>
+
+      <script type="text/javascript" charset="utf-8">
+          $(document).ready(function() {
+              $('#example').DataTable();
+          });
+      </script>
+      
       <div class="panel panel-primary">
       
         <!-- PANEL CABECERA DEL FORMULARIO -->
@@ -43,7 +18,7 @@
 
         <div class="panel-body text-center">
             <big><strong>$denominacion</strong></big><br>
-            <big>{cuit}</big>
+            <big>$nif</big>
         </div>
         
         <div class="panel-footer text-right">
@@ -63,11 +38,11 @@
                 </div>
                 <div class="panel-body">
                     $calle $numero<br>
-                    Piso $piso, Pta. $puerta<br>
-                    CP: $cp, $ciudad
+                    Planta $planta, Pta. $puerta<br>
+                    $ciudad
                 </div>
                 <div class="panel-footer">
-                    <a href="/domicilio/editar/$domicilio_id" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-pencil"></i> Editar</a>
+                    <a href="/cliente/editar/$cliente_id" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-pencil"></i> Editar</a>
                 </div>
             </div>
         </div>
@@ -95,7 +70,7 @@
                     <!--fila_dc-->
                 </table>
                 <div class="panel-footer">
-                    <a href="/datodecontacto/agregar/$cliente_id" 
+                    <a href="/datodecontacto/agregar" 
                         class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i> Agregar nuevo</a>
                 </div>
             </div>
@@ -144,18 +119,9 @@
         </div>
         
         <div class="panel-footer text-left">
-            <a href="/pedido/agregar/$cliente_id" class="btn btn-success btn-sm"><i 
+            <a href="/pedido/agregar" class="btn btn-success btn-sm"><i 
                 class="glyphicon glyphicon-plus"></i> Agregar nuevo</a>
         </div>
       
       </div>
-      
-      
       <!-- contenido -->
-
-
-    </div>
-  </div>
- 
-  </body>
-</html>

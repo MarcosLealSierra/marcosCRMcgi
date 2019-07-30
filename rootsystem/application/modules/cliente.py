@@ -6,6 +6,7 @@ from core.collector import Collector
 from core.helpers import compose
 from core.render import Template
 from core.stdobject import StdObject
+from modules.datodecontacto import DatoDeContacto
 from modules.domicilio import Domicilio
 from modules.pedido import Pedido
 from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
@@ -19,27 +20,51 @@ class Cliente(StdObject):
         self.denominacion = ''
         self.nif = ''
         self.domicilio = compose(domicilio, Domicilio)
-        #self.pedido_collection = []
+        self.datodecontacto_collection = []
+        self.pedido_collection = []
+    
+    def add_datodecontacto(self, datodecontacto):
+        self.datodecontacto_collection.append(compose(datodecontacto, DatoDeContacto))
 
     def add_pedido(self, pedido):
         self.pedido_collection.append(compose(pedido, Pedido))
+
+    def insert(self):
+        sql = """
+            insert into     cliente
+                            (denominacion, nif, domicilio)
+            values          ('{}', '{}', {})
+        """.format(
+            self.denominacion,
+            self.nif,
+            self.domicilio.domicilio_id
+        )
+        self.cliente_id = DBQuery(db_data).execute(sql)
     
     def select(self):
         super(Cliente, self).select()
-        #pedido = Pedido()
-        #pedidos = pedido.get_pedidos(self.cliente_id)
+        pedido = Pedido()
+        pedidos = pedido.get_pedidos(self.cliente_id)
 
-        #for tupla in pedidos:
-            #pedido = Pedido()
-            #pedido.pedido_id = tupla[0]
-            #pedido.select()
-            #self.pedido_collection.append(pedido)
+        for tupla in pedidos:
+            pedido = Pedido()
+            pedido.pedido_id = tupla[0]
+            pedido.select()
+            self.add_pedido(pedido)
 
-        #print HTTP_HTML
-        #print ""
-        #print pedidos
-        #print self.pedido_collection
-        
+    def update(self):
+        sql = """
+            UPDATE      cliente
+            SET         denominacion = '{}', nif = '{}', domicilio = {}
+            WHERE       cliente_id = {}
+        """.format(
+            self.denominacion,
+            self.nif,
+            self.domicilio.domicilio_id,
+            self.cliente_id
+        )
+        DBQuery(db_data).execute(sql)
+
 
 class ClienteView(object):
     

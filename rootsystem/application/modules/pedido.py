@@ -1,10 +1,11 @@
 from cgi import FieldStorage
+from time import strftime
 
 from core.db import DBQuery
 from core.helpers import compose
 from core.loglconnector import LoglConnector
 from core.render import Template
-#from core.stdobject import StdObject
+from core.stdobject import StdObject
 from modules.producto import Producto
 from settings import ARG, db_data, HTTP_HTML, HOST, STATIC_PATH, TEMPLATE_PATH
 
@@ -20,6 +21,11 @@ class Pedido(object):
 
     def add_producto(self, producto):
         self.producto_collection.append(compose(producto, Producto))
+    
+    @staticmethod
+    def get_pedidos(oid=0):
+        sql = "SELECT pedido_id FROM pedido WHERE cliente = {}".format(oid)
+        return DBQuery(db_data).execute(sql)
     
     def insert(self):
         sql = """
@@ -63,11 +69,6 @@ class Pedido(object):
         sql = "DELETE FROM pedido WHERE pedido_id = {}".format(self.pedido_id)
         DBQuery(db_data).execute(sql)
 
-    @staticmethod
-    def get_pedidos(oid=0):
-        sql = "SELECT pedido_id FROM pedido WHERE cliente = {}".format(oid)
-        return DBQuery(db_data).execute(sql)
-
 
 class PedidoView(object):
 
@@ -105,17 +106,10 @@ class PedidoController(object):
         producto_id = formulario['producto_id']
         cantidad = formulario['cantidad']
 
-        #print(HTTP_HTML)
-        #print("")
-        #for i, elemento in enumerate(producto_id):
-            #p = Producto()
-            #p.producto_id = elemento.value
-            #p.select()
-            #p.fm = cantidad[i].value
-            #print(vars(p))
-
         pd = Pedido()
-        pd.cliente = 2 
+        pd.estado = 1
+        pd.fecha = strftime("%Y-%m-%d")
+        pd.cliente = 1 
         pd.insert()
         
         for i, elemento in enumerate(producto_id):
@@ -124,37 +118,12 @@ class PedidoController(object):
             pr.select()
             pr.fm = cantidad[i].value
             pd.producto_collection.append(pr)
-            
-
-
-	# controlador PEDIDO
-	#pr16 = Producto()
-	#pr16.producto_id = 26
-        #pr16.select()
-	#pd.producto_collection.append(pr16)
-	#pr16.fm = 100
-
-	#pr23 = Producto()
-	#pr23.producto_id = 27
-        #pr23.select()
-	#pd.producto_collection.append(pr23)
-	#pr23.fm = 50
-
-	#pr72 = Producto()
-	#pr72.producto_id = 28
-        #pr72.select()
-	#pd.producto_collection.append(pr72)
-	#pr72.fm = 25
 
         cl = LoglConnector(pd, 'Producto')
         cl.insert()
         
-        #print(HTTP_HTML)
-        #print("")
-        #print(vars(cl))
-        
         print(HTTP_HTML)
-        print("Location: {}/pedido/ver/{}".format(HOST, self.model.pedido_id))
+        print("Location: {}/pedido/ver/{}".format(HOST, pd.pedido_id))
         print("")
         print("")
 
@@ -163,7 +132,3 @@ class PedidoController(object):
         self.model.select()
 
         self.view.ver(self.model)
-
-        #print(HTTP_HTML)
-        #print("")
-        #print(vars(self.model))
