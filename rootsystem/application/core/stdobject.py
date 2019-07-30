@@ -34,16 +34,21 @@ class StdObject(object):
         clase = self.__class__.__name__.lower()
         propiedad_id = '{}_id'.format(clase)
         
-        propiedades = vars(self).keys()
+        propiedades = vars(self)
 
-        sql = "SELECT {p} FROM {c} WHERE {c}_id = {pi}".format(
-            p=", ".join(propiedades), 
+        campos_tabla = []
+        for campo in propiedades:
+            if not isinstance(propiedades[campo], list):
+                campos_tabla.append(campo)
+
+        sql = "SELECT {cp} FROM {c} WHERE {c}_id = {pi}".format(
+            cp=", ".join(campos_tabla), 
             c=clase, 
             pi=self.__dict__[propiedad_id]
         )
         resultados = DBQuery(db_data).execute(sql)[0]
         
-        for i, p in enumerate(propiedades):
+        for i, p in enumerate(propiedades.keys()):
             compositor = "{}".format(p.capitalize())
             compositor_id = '{}_id'.format(p)
             archivo = "modules.{}".format(p)
