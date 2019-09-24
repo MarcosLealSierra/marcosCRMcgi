@@ -4,7 +4,33 @@
             $('#example').DataTable();
         });
       </script>
-      <div class="panel panel-primary">
+
+			<!-- SCRIPT NECESARIO PARA PROCESAR UNA SOLICITUD CON AJAX -->
+			<script language="javascript">
+			function cargar(pedido, estado) {
+					var http_request = new XMLHttpRequest();
+					http_request.overrideMimeType('text/html');
+				 
+					http_request.onreadystatechange = function() {
+							if (http_request.readyState == 4) {
+									if (http_request.status == 200) {
+											var respuesta = http_request.responseText
+											document.getElementById('actual').innerHTML = respuesta;
+									}
+							} else {
+									document.getElementById('actual').innerHTML = 'Cargando...';
+							}
+					};
+				 
+					var url = '/pedido/editar/' + pedido + "/" + estado;
+
+					http_request.open('GET', url, true);
+					http_request.send(null);
+			}
+			</script>
+      <!-- *FIN* SCRIPT NECESARIO PARA PROCESAR UNA SOLICITUD CON AJAX -->
+      
+			<div class="panel panel-primary">
       
         <!-- PANEL CABECERA DEL FORMULARIO -->
         <div class="panel-heading">
@@ -16,27 +42,26 @@
                 <b><big>$denominacion</big></b><br>
                 $calle $numero<br>
                 Piso $planta, Pta. $puerta<br>
-                CP: $cp, $ciudad
+                $ciudad
             </div>
             <div class="col-md-6 text-right">
                 <big><strong>Fecha: </strong> $fecha</big><br>
-                <big><b>Estado:</b> $estado</big><br>
+                <big><b>Estado:</b> <span id="actual"> $estado</span> </big><br>
             </div>
                         
         </div>
         
         <div class="panel-footer text-right">
             Cambiar estado a:
-                <a href="/pedido/editar/$pedido_id/recibido">recibido</a> | 
-                <a href="/pedido/editar/$pedido_id/preparado">preparado</a> | 
-                <a href="/pedido/editar/$pedido_id/enviado">enviado</a> | 
-                <a href="/pedido/editar/$pedido_id/anulado">anulado</a>
+								<a href="#" onclick="cargar($pedido_id, '2'); return false;">En preparación</a> |
+								<a href="#" onclick="cargar($pedido_id, '3'); return false;">Preparado</a> |
+								<a href="#" onclick="cargar($pedido_id, '4'); return false;">Enviado</a> |
+								<a href="#" onclick="cargar($pedido_id, '5'); return false;">Entregado</a> |
+								<a href="#" onclick="cargar($pedido_id, '6'); return false;">Cancelado</a>
         </div>
       
       </div>
-      
-      
-    
+       
       <div class="panel panel-primary">
       
         <!-- PANEL CABECERA DEL FORMULARIO -->
@@ -76,8 +101,12 @@
         </div>
         
         <div class="panel-footer text-left">
-            <a href="/cliente/ver/$cliente_id" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-home"></i> Volver a cliente</a>
+            <a href="/cliente/ver/$cliente" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-home"></i> Volver a cliente</a>
         </div>
       
       </div>
       <!-- contenido -->
+
+
+
+

@@ -1,4 +1,5 @@
-from settings import HTTP_HTML
+from core.db import DBQuery
+from settings import db_data, HTTP_HTML
 
 
 class DatoDeContacto(object):
@@ -64,3 +65,20 @@ class DatoDeContactoController(object):
     def __init__(self):
         self.model = DatoDeContacto()
         self.view = DatoDeContactoView()
+
+    def guardar(self, formulario, cliente_id):
+        # Condicional ternario
+        
+        self.model.cliente = cliente_id
+       
+        self.model.denominacion = "Teléfono"
+        self.model.valor = formulario['telefono'].value
+        self.model.insert() 
+
+        self.model.denominacion = "Móvil"
+        self.model.valor = formulario['movil'].value
+        self.model.insert() 
+
+        self.model.denominacion = "Email"
+        self.model.valor = formulario['email'].value
+        self.model.insert() 

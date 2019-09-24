@@ -55,11 +55,13 @@ class StdObject(object):
 
             if self.__dict__[p] is None:
                 modulo = __import__(archivo, fromlist=[compositor])
-                self.__dict__[p] = getattr(modulo, compositor)()
+                self.__dict__[p] = getattr(modulo, compositor)()# FACTORY?
                 self.__dict__[p].__dict__[compositor_id] = resultados[i]
                 self.__dict__[p].select()
             elif isinstance(self.__dict__[p], list):
                 pass
+                # identificar dependientes e independientes y construirlas
+                # según el conector lógico o el get auxiliar
             else:
                 self.__dict__[p] = resultados[i]
     

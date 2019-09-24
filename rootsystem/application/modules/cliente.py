@@ -4,9 +4,10 @@ from re import sub
 from core.db import DBQuery
 from core.collector import Collector
 from core.helpers import compose
+from core.factory import Factory
 from core.render import Template
 from core.stdobject import StdObject
-from modules.datodecontacto import DatoDeContacto
+from modules.datodecontacto import DatoDeContacto, DatoDeContactoController
 from modules.domicilio import Domicilio
 from modules.pedido import Pedido
 from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
@@ -28,6 +29,10 @@ class Cliente(StdObject):
 
     def add_pedido(self, pedido):
         self.pedido_collection.append(compose(pedido, Pedido))
+    
+    def get_name(self, idc=0):
+        self.model.cliente_id = idc
+        self.model.select()
 
     def insert(self):
         sql = """
@@ -43,14 +48,20 @@ class Cliente(StdObject):
     
     def select(self):
         super(Cliente, self).select()
-        pedido = Pedido()
-        pedidos = pedido.get_pedidos(self.cliente_id)
-
+       
+        pedidos = Pedido.get_pedidos(self.cliente_id)
         for tupla in pedidos:
             pedido = Pedido()
             pedido.pedido_id = tupla[0]
             pedido.select()
             self.add_pedido(pedido)
+
+        datosdecontacto = DatoDeContacto.get_datosdecontacto(self.cliente_id)
+        for tupla in datosdecontacto:
+            datodecontacto = DatoDeContacto()
+            datodecontacto.datodecontacto_id = tupla[0]
+            datodecontacto.select()
+            self.add_datodecontacto(datodecontacto)
 
     def update(self):
         sql = """
@@ -79,8 +90,28 @@ class ClienteView(object):
         print(Template(TEMPLATE_PATH).render_inner(form))
     
     def ver(self, cliente):
-        with open("{}/cliente_ver.html".format(STATIC_PATH), "r") as f:
-            ficha = f.read()
+        ficha = Template(
+            '{}/cliente_ver.html'.format(STATIC_PATH)).get_template()
+
+        fila_dc = Template(base=ficha).extract('fila_dc')
+        pila = []
+        for dc in cliente.datodecontacto_collection:
+            diccionario = vars(dc)
+            render = Template(base=fila_dc).render(diccionario)
+            pila.append(render)
+
+        pila = ''.join(pila)
+        ficha = ficha.replace(fila_dc, pila)
+
+        fila_pedido = Template(base=ficha).extract('fila_hp')
+        pila = []
+        for pedido in cliente.pedido_collection:
+            diccionario = vars(pedido)
+            render = Template(base=fila_pedido).render(diccionario)
+            pila.append(render)
+
+        pila = ''.join(pila)
+        ficha = ficha.replace(fila_pedido, pila)
 
         diccionario = vars(cliente)
         diccionario.update(vars(cliente.domicilio))
@@ -130,6 +161,10 @@ class ClienteController(object):
         self.model = Cliente()
         self.view = ClienteView()
 
+    def get_name(self, idc=0):
+        self.model.cliente_id = idc
+        self.model.select()
+
     def agregar(self):
         self.view.agregar()
 
@@ -147,6 +182,9 @@ class ClienteController(object):
         self.model.denominacion = formulario['denominacion'].value
         self.model.nif = formulario['nif'].value
         self.model.insert()
+
+        dc = DatoDeContactoController()
+        dc.guardar(formulario, self.model.cliente_id)
 
         print(HTTP_HTML)
         print("Location: {}/cliente/ver/{}".format(HOST, self.model.cliente_id))

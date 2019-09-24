@@ -42,7 +42,11 @@ CREATE TABLE IF NOT EXISTS pedido (
     INDEX(cliente),
     FOREIGN KEY(cliente) 
         REFERENCES cliente(cliente_id) 
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+	domicilio INT(11),
+	FOREIGN KEY(domicilio)
+		REFERENCES domicilio(domicilio_id)
+		ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS productopedido (
@@ -58,3 +62,30 @@ CREATE TABLE IF NOT EXISTS productopedido (
         ON DELETE cascade,
     fm INT(3)
 ) ENGINE=InnoDB;
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS agregar_columna //
+CREATE PROCEDURE agregar_columna()
+	BEGIN
+		IF NOT EXISTS (
+			SELECT 	NULL
+			FROM	INFORMATION_SCHEMA.COLUMNS
+			WHERE	table_name = 'pedido'
+			AND		table_schema = DATABASE()
+			AND		column_name = 'domicilio'
+		) THEN
+			ALTER TABLE 	pedido 
+			ADD COLUMN 		domicilio INT(11), 
+			ADD FOREIGN KEY	(domicilio)
+				REFERENCES 		domicilio(domicilio_id)
+				ON DELETE 		SET NULL;
+			UPDATE 			pedido 
+			SET 			domicilio = (
+				SELECT domicilio_id FROM domicilio LIMIT 1
+			);
+		)
+		END IF;
+	END //
+DELIMITER ;
+CALL agregar_columna();
+

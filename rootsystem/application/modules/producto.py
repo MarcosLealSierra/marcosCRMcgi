@@ -16,7 +16,7 @@ class Producto(StdObject):
         self.producto_id = 0
         self.denominacion = ''
         self.precio = 0.0
-    
+     
     def insert(self):
         sql = """
             INSERT INTO     producto
