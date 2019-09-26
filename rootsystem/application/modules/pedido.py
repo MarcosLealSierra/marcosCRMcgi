@@ -99,23 +99,31 @@ class PedidoView(object):
         print(Template(TEMPLATE_PATH).render_inner(contenido))
 
     def ver(self, pedido, denominacion):
-        # TODO 1. Hacer render iterativo de pedido.producto_collection
-        # TODO 2. Hacer sustitución directa de pedido
-        # TODO  2.1. Obtener diccionario de domicilio
-        # TODO  2.2. Obtener diccionario de pedido
-        # TODO  2.3. Actualizar ambos diccionarios
-        # TODO  2.4. Hacer render
-        # FIXME Sustituir "withopen" por "Template (core.render)"
-        with open("{}/pedido_ver.html".format(STATIC_PATH), "r") as f:
-            ficha = f.read()
+        ficha = Template(
+            '{}/pedido_ver.html'.format(STATIC_PATH)).get_template()
+        fila_producto = Template(base=ficha).extract('filapepro')
+        pila = []
+        total = []
+        for producto in pedido.producto_collection:
+            diccionario = vars(producto)
+            diccionario['subtotal'] = producto.fm * producto.precio
+            total.append(diccionario['subtotal'])
+            render = Template(base=fila_producto).render(diccionario)
+            pila.append(render)
 
+        pila = ''.join(pila)
+        contenido = ficha.replace(fila_producto, pila)
+
+        cliente = Factory().make('Cliente', pedido.cliente)
+        domicilio = cliente.domicilio
         diccionario = vars(pedido)
+        diccionario.update(vars(domicilio))
         diccionario['denominacion'] = denominacion
-        ficha = Template(base=ficha).render(diccionario)
+        diccionario['total'] = sum(total)
+        contenido = Template(base=contenido).render(diccionario)
 
-        print(HTTP_HTML)
-        print("")
-        print(Template(TEMPLATE_PATH).render_inner(ficha))
+        print(HTTP_HTML, "\n")
+        print(Template(TEMPLATE_PATH).render_inner(contenido))
 
 
 class PedidoController(object):
@@ -155,11 +163,22 @@ class PedidoController(object):
         print("")
 
     def ver(self):
-        self.model.pedido_id = ARG
-        self.producto_collection = []
+        self.model.pedido_id = int(ARG)
+        self.model.producto_collection = []
         self.model.select()
 
-        #cliente_controller = Factory().make('Cliente', self.model.cliente)
-        #cliente_controller.get_name(self.model.cliente)
+        cliente_controller = Factory().controller('Cliente')
+        cliente_controller.get_name(self.model.cliente)
 
-        self.view.ver(self.model, "pepito")
+        self.view.ver(self.model, cliente_controller.model.denominacion)
+    
+    def eliminar(self):
+        self.model.pedido_id = int(ARG)
+        self.model.select()
+        cliente = Factory().make('Cliente', self.model.cliente)
+        self.model.delete()
+        
+        print(HTTP_HTML)
+        print("Location: {}/cliente/ver/{}".format(HOST, cliente.cliente_id))
+        print("")
+        print("")

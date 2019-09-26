@@ -92,7 +92,6 @@ class ClienteView(object):
     def ver(self, cliente):
         ficha = Template(
             '{}/cliente_ver.html'.format(STATIC_PATH)).get_template()
-
         fila_dc = Template(base=ficha).extract('fila_dc')
         pila = []
         for dc in cliente.datodecontacto_collection:
