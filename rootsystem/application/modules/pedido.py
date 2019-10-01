@@ -1,6 +1,7 @@
 from cgi import FieldStorage
 from time import strftime
 
+from common.helpers import ControllerFactory
 from core.db import DBQuery
 from core.collector import Collector
 from core.factory import Factory
@@ -167,7 +168,7 @@ class PedidoController(object):
         self.model.producto_collection = []
         self.model.select()
 
-        cliente_controller = Factory().controller('Cliente')
+        cliente_controller = ControllerFactory().make('ClienteController')
         cliente_controller.get_name(self.model.cliente)
 
         self.view.ver(self.model, cliente_controller.model.denominacion)
