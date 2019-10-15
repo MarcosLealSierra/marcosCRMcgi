@@ -1,16 +1,16 @@
 from cgi import FieldStorage
 from time import strftime
 
-from common.helpers import ControllerFactory
 from core.db import DBQuery
 from core.collector import Collector
-from core.factory import Factory
+from core.factory import ControllerFactory, Factory
 from core.helpers import compose
 from core.loglconnector import LoglConnector
 from core.render import Template
 from core.stdobject import StdObject
 from modules.producto import Producto
-from settings import ARG, db_data, HTTP_HTML, HOST, STATIC_PATH, TEMPLATE_PATH
+from settings import ARG, db_data, HTTP_HTML, HOST, STATIC_PATH, \
+    TEMPLATE_PATH, URL_LIST
 
 
 class Pedido(object):
@@ -59,7 +59,7 @@ class Pedido(object):
 
     def update(self):
         sql = """
-            UDPATE      pedido
+            UPDATE      pedido
             SET         estado = {}, fecha = '{}', cliente = {}
             WHERE       pedido_id = {}
         """.format(
@@ -126,6 +126,10 @@ class PedidoView(object):
         print(HTTP_HTML, "\n")
         print(Template(TEMPLATE_PATH).render_inner(contenido))
 
+    def editar(self, estado):
+        print(HTTP_HTML, "\n")
+        print(estado)
+
 
 class PedidoController(object):
 
@@ -172,6 +176,15 @@ class PedidoController(object):
         cliente_controller.get_name(self.model.cliente)
 
         self.view.ver(self.model, cliente_controller.model.denominacion)
+
+    def editar(self):
+        self.model.pedido_id = int(ARG)
+        self.model.select()
+
+        self.model.estado = int(URL_LIST[-1])
+        self.model.update()
+
+        self.view.editar(self.model.estado)
     
     def eliminar(self):
         self.model.pedido_id = int(ARG)
@@ -181,5 +194,4 @@ class PedidoController(object):
         
         print(HTTP_HTML)
         print("Location: {}/cliente/ver/{}".format(HOST, cliente.cliente_id))
-        print("")
         print("")
