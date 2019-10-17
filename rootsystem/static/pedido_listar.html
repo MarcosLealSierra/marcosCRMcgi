@@ -32,18 +32,18 @@
                 <tbody>
                     <!--fila-->
                     <tr>
-                        <td>{pedido_id}</td>
-                        <td>{fecha}</a></td>
-                        <td>{productos}</td>
-                        <td>{cliente}</td>
-                        <td>{denominacion}</td>
+                        <td>$pedido_id</td>
+                        <td>$fecha</a></td>
+                        <td>$productos</td>
+                        <td>$cliente</td>
+                        <td>$denominacion</td>
                         <td class="text-center">
-                            <a href="/pedido/ver/{pedido_id}" class="btn btn-default btn-sm" 
-                            title="Ver pedido"><i class="glyphicon glyphicon-eye-open"></i></a>
-                            <a href="/pedido/editar/{pedido_id}" class="btn btn-warning btn-sm" 
-                            title="Editar pedido"><i class="glyphicon glyphicon-pencil"></i></a>
-                            <a href="/pedido/eliminar/{pedido_id}" class="btn btn-danger btn-sm"
-                            title="Eliminar pedido"><i class="glyphicon glyphicon-trash"></i></a>
+                            <a href="/pedido/ver/$pedido_id" class="btn btn-info btn-sm" 
+                            title="Ver pedido"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>
+                            <a href="/pedido/editar/$pedido_id" class="btn btn-warning btn-sm"
+                            title="Editar pedido"><i class="glyphicon glyphicon-pencil"></i> Editar</a>
+                            <a href="/pedido/eliminar/$pedido_id" class="btn btn-danger btn-sm" 
+                            title="Eliminar pedido"><i class="glyphicon glyphicon-trash"></i> Borrar</a>
                         </td>
                     </tr>
                     <!--fila-->

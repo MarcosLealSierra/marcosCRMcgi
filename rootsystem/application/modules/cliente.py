@@ -30,10 +30,6 @@ class Cliente(StdObject):
     def add_pedido(self, pedido):
         self.pedido_collection.append(compose(pedido, Pedido))
     
-    def get_name(self, idc=0):
-        self.model.cliente_id = idc
-        self.model.select()
-
     def insert(self):
         sql = """
             insert into     cliente

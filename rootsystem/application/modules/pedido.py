@@ -138,13 +138,13 @@ class PedidoView(object):
         fila = Template(base=tabla).extract('fila')
 
         for pedido in coleccion:
-            #pedido.producto_collection = []
-            #pedido.select()
-            #pedido.cantidad = len(pedido.producto_collection)
+            pedido.producto_collection = []
+            pedido.select()
+            pedido.productos = len(pedido.producto_collection)
+            cliente_controller = ControllerFactory().make('ClienteController')
+            cliente_controller.get_name(pedido.cliente)
+            pedido.denominacion = cliente_controller.model.denominacion
             diccionario = vars(pedido)
-            print(HTTP_HTML, "\n")
-            print(diccionario)
-            #diccionario.update(vars(pedido.domicilio))
             render = Template(base=fila).render(diccionario)
             pila.append(render)
 
@@ -152,8 +152,8 @@ class PedidoView(object):
 
         contenido = tabla.replace(fila, pila)
 
-        #print(HTTP_HTML, "\n")
-        #print(Template(TEMPLATE_PATH).render_inner(contenido))
+        print(HTTP_HTML, "\n")
+        print(Template(TEMPLATE_PATH).render_inner(contenido))
 
 
 class PedidoController(object):
