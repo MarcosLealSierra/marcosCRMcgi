@@ -3,7 +3,7 @@ from re import sub
 
 from core.db import DBQuery
 from core.collector import Collector
-from core.helpers import compose
+from core.helpers import compose, redirect
 from core.factory import Factory
 from core.render import Template
 from core.stdobject import StdObject
@@ -105,6 +105,9 @@ class ClienteView(object):
         fila_pedido = Template(base=ficha).extract('fila_hp')
         pila = []
         for pedido in cliente.pedido_collection:
+            pedido.producto_collection = []
+            pedido.select()
+            pedido.cantidad = len(pedido.producto_collection)
             diccionario = vars(pedido)
             render = Template(base=fila_pedido).render(diccionario)
             pila.append(render)
@@ -114,6 +117,7 @@ class ClienteView(object):
 
         diccionario = vars(cliente)
         diccionario.update(vars(cliente.domicilio))
+        
         ficha = Template(base=ficha).render(diccionario)
 
         print(HTTP_HTML, "\n")
@@ -185,10 +189,7 @@ class ClienteController(object):
         dc = DatoDeContactoController()
         dc.guardar(formulario, self.model.cliente_id)
 
-        print(HTTP_HTML)
-        print("Location: {}/cliente/ver/{}".format(HOST, self.model.cliente_id))
-        print("")
-        print("")
+        redirect("cliente/ver", self.model.cliente_id)
 
     def ver(self):
         self.model.cliente_id = int(ARG) 
@@ -218,19 +219,13 @@ class ClienteController(object):
 
         self.model.update()
         
-        print(HTTP_HTML)
-        print("Location: {}/cliente/ver/{}".format(HOST, self.model.cliente_id))
-        print("")
-        print("")
+        redirect("cliente/ver", self.model.cliente_id)
 
     def eliminar(self):
         self.model.cliente_id = int(ARG)
         self.model.delete()
         
-        print(HTTP_HTML)
-        print("Location: {}/cliente/listar".format(HOST))
-        print("")
-        print("")
+        redirect("cliente/listar")
 
     def listar(self):
         c = Collector()

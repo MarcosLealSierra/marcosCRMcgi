@@ -81,4 +81,8 @@ class DatoDeContactoController(object):
 
         self.model.denominacion = "Email"
         self.model.valor = formulario['email'].value
-        self.model.insert() 
+        self.model.insert()
+
+
+class Datodecontacto(DatoDeContacto): pass
+class DatodecontactoController(DatoDeContactoController): pass

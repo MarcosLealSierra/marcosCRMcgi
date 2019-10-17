@@ -4,6 +4,7 @@ from re import sub
 from core.db import DBQuery
 from core.collector import Collector
 from core.controller import Controller
+from core.helpers import redirect
 from core.render import Template
 from core.stdobject import StdObject
 from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
@@ -110,10 +111,7 @@ class ProductoController(Controller):
         self.model.precio = formulario['precio'].value
         self.model.insert()
 
-        print(HTTP_HTML)
-        print("Location: {}/producto/ver/{}".format(HOST, self.model.producto_id))
-        print("")
-        print("")
+        redirect("producto/ver", self.model.producto_id)
 
     def ver(self):
         self.model.producto_id = ARG 
@@ -134,19 +132,13 @@ class ProductoController(Controller):
         self.model.precio = formulario['precio'].value
         self.model.update()
         
-        print(HTTP_HTML)
-        print("Location: {}/producto/ver/{}".format(HOST, self.model.producto_id))
-        print("")
-        print("")
+        redirect("producto/ver", self.model.producto_id)
 
     def eliminar(self):
         self.model.producto_id = ARG
         self.model.delete()
         
-        print(HTTP_HTML)
-        print("Location: {}/producto/listar".format(HOST))
-        print("")
-        print("")
+        redirect("producto/listar")
 
     def listar(self):
         c = Collector()

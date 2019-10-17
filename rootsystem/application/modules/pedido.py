@@ -4,7 +4,7 @@ from time import strftime
 from core.db import DBQuery
 from core.collector import Collector
 from core.factory import ControllerFactory, Factory
-from core.helpers import compose
+from core.helpers import compose, redirect
 from core.loglconnector import LoglConnector
 from core.render import Template
 from core.stdobject import StdObject
@@ -163,9 +163,7 @@ class PedidoController(object):
         cl = LoglConnector(self.model, 'Producto')
         cl.insert()
         
-        print(HTTP_HTML)
-        print("Location: {}/pedido/ver/{}".format(HOST, self.model.pedido_id))
-        print("")
+        redirect("pedido/ver", self.model.pedido_id)
 
     def ver(self):
         self.model.pedido_id = int(ARG)
@@ -192,6 +190,4 @@ class PedidoController(object):
         cliente = Factory().make('Cliente', self.model.cliente)
         self.model.delete()
         
-        print(HTTP_HTML)
-        print("Location: {}/cliente/ver/{}".format(HOST, cliente.cliente_id))
-        print("")
+        redirect("cliente/ver", cliente.cliente_id)
