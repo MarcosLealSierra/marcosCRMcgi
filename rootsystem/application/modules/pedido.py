@@ -130,6 +130,31 @@ class PedidoView(object):
         print(HTTP_HTML, "\n")
         print(estado)
 
+    def listar(self, coleccion):
+        pila = []
+        tabla = Template(
+            '{}/pedido_listar.html'.format(STATIC_PATH)
+        ).get_template()
+        fila = Template(base=tabla).extract('fila')
+
+        for pedido in coleccion:
+            #pedido.producto_collection = []
+            #pedido.select()
+            #pedido.cantidad = len(pedido.producto_collection)
+            diccionario = vars(pedido)
+            print(HTTP_HTML, "\n")
+            print(diccionario)
+            #diccionario.update(vars(pedido.domicilio))
+            render = Template(base=fila).render(diccionario)
+            pila.append(render)
+
+        pila = ''.join(pila)
+
+        contenido = tabla.replace(fila, pila)
+
+        #print(HTTP_HTML, "\n")
+        #print(Template(TEMPLATE_PATH).render_inner(contenido))
+
 
 class PedidoController(object):
 
@@ -191,3 +216,8 @@ class PedidoController(object):
         self.model.delete()
         
         redirect("cliente/ver", cliente.cliente_id)
+
+    def listar(self):
+        c = Collector()
+        c.get("Pedido")
+        self.view.listar(c.coleccion)
