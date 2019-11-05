@@ -138,12 +138,11 @@ class PedidoView(object):
         fila = Template(base=tabla).extract('fila')
 
         for pedido in coleccion:
-            pedido.producto_collection = []
-            pedido.select()
             pedido.productos = len(pedido.producto_collection)
             cliente_controller = ControllerFactory().make('ClienteController')
             cliente_controller.get_name(pedido.cliente)
-            pedido.denominacion = cliente_controller.model.denominacion
+            pedido.cliente_id = pedido.cliente
+            pedido.cliente = cliente_controller.model.denominacion
             diccionario = vars(pedido)
             render = Template(base=fila).render(diccionario)
             pila.append(render)
@@ -178,6 +177,11 @@ class PedidoController(object):
         self.model.insert()
        
         self.model.producto_collection = []
+
+        if not isinstance(productos, list):
+            productos = [productos]
+            cantidades = [cantidades]
+
         for i, elemento in enumerate(productos):
             pr = Producto()
             pr.producto_id = elemento.value
@@ -218,6 +222,21 @@ class PedidoController(object):
         redirect("cliente/ver", cliente.cliente_id)
 
     def listar(self):
-        c = Collector()
-        c.get("Pedido")
+        c = PedidoCollector()
+        c.get()
         self.view.listar(c.coleccion)
+
+
+class PedidoCollector(Collector):
+
+    def get(self):
+        sql = "SELECT pedido_id FROM pedido"
+        pedidos = DBQuery(db_data).execute(sql)
+
+        for p in pedidos:
+           pedido = Pedido()
+           pedido.pedido_id = p[0]
+           pedido.producto_collection = []
+           pedido.select()
+           self.coleccion.append(pedido)
+           

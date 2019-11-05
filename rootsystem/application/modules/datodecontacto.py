@@ -1,5 +1,10 @@
+from cgi import FieldStorage
+from re import sub
+
 from core.db import DBQuery
-from settings import db_data, HTTP_HTML
+from core.helpers import redirect
+from core.render import Template
+from settings import ARG, db_data, HTTP_HTML, MODULE, STATIC_PATH, TEMPLATE_PATH
 
 
 class DatoDeContacto(object):
@@ -58,7 +63,20 @@ class DatoDeContacto(object):
 
 
 class DatoDeContactoView(object):
-    pass
+
+    def agregar(self, cliente_id):
+        with open("{}/datodecontacto_agregar.html".format(STATIC_PATH), "r") as f:
+            form = f.read()
+
+        regex = "<!-- errores -->(.|\n)+<!-- errores -->"
+        form = sub(regex, '', form)
+
+        diccionario = dict(cliente=cliente_id)
+        contenido = Template(base=form).render(diccionario)
+
+        print(HTTP_HTML, "\n")
+        print(Template(TEMPLATE_PATH).render_inner(contenido))
+
 
 class DatoDeContactoController(object):
     
@@ -66,14 +84,19 @@ class DatoDeContactoController(object):
         self.model = DatoDeContacto()
         self.view = DatoDeContactoView()
 
-    def guardar(self, formulario, cliente_id):
-        # Condicional ternario
-        
+    def agregar(self):
+        self.model.cliente = int(ARG)
+        self.view.agregar(self.model.cliente)
+
+    def guardar(self, formulario={}, cliente_id=0):     
+        if not formulario: formulario = FieldStorage()
+        if not cliente_id: cliente_id = formulario['cliente'].value
         self.model.cliente = cliente_id
-       
-        self.model.denominacion = "Teléfono"
-        self.model.valor = formulario['telefono'].value
-        self.model.insert() 
+
+        if formulario['telefono'].value:
+            self.model.denominacion = "Teléfono"
+            self.model.valor = formulario['telefono'].value
+            self.model.insert() 
 
         self.model.denominacion = "Móvil"
         self.model.valor = formulario['movil'].value
@@ -82,6 +105,9 @@ class DatoDeContactoController(object):
         self.model.denominacion = "Email"
         self.model.valor = formulario['email'].value
         self.model.insert()
+
+        if MODULE == "datodecontacto":
+            redirect("cliente/ver/{}".format(cliente_id))
 
 
 class Datodecontacto(DatoDeContacto): pass

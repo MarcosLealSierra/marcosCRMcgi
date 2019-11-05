@@ -1,8 +1,4 @@
       <!--form-->
-      <style>
-          body { padding-top: 60px; margin-bottom: 60px; } 
-      </style>
-      
       <script type="text/javascript" charset="utf-8">
           $(document).ready(function() {
               $('#example').DataTable();
@@ -25,7 +21,6 @@
                         <th>Fecha</th>
                         <th>Productos</th>
                         <th>Cliente</th>
-                        <th>Denominacion</th>
                         <th>&nbsp;</th>
                     </tr>
                 </thead>
@@ -35,8 +30,7 @@
                         <td>$pedido_id</td>
                         <td>$fecha</a></td>
                         <td>$productos</td>
-                        <td>$cliente</td>
-                        <td>$denominacion</td>
+                        <td><a href="/cliente/ver/$cliente_id">$cliente</a></td>
                         <td class="text-center">
                             <a href="/pedido/ver/$pedido_id" class="btn btn-info btn-sm" 
                             title="Ver pedido"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>

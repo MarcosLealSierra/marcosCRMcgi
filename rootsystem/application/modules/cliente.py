@@ -42,13 +42,15 @@ class Cliente(StdObject):
         )
         self.cliente_id = DBQuery(db_data).execute(sql)
     
-    def select(self):
+    def select(self, producto_collection=False):
         super(Cliente, self).select()
        
         pedidos = Pedido.get_pedidos(self.cliente_id)
         for tupla in pedidos:
             pedido = Pedido()
             pedido.pedido_id = tupla[0]
+            if producto_collection:
+                pedido.producto_collection = []
             pedido.select()
             self.add_pedido(pedido)
 
@@ -101,8 +103,6 @@ class ClienteView(object):
         fila_pedido = Template(base=ficha).extract('fila_hp')
         pila = []
         for pedido in cliente.pedido_collection:
-            pedido.producto_collection = []
-            pedido.select()
             pedido.cantidad = len(pedido.producto_collection)
             diccionario = vars(pedido)
             render = Template(base=fila_pedido).render(diccionario)
@@ -189,7 +189,7 @@ class ClienteController(object):
 
     def ver(self):
         self.model.cliente_id = int(ARG) 
-        self.model.select()
+        self.model.select(producto_collection=True)
 
         self.view.ver(self.model)
 

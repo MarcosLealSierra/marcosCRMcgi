@@ -1,0 +1,61 @@
+      <!-- contenido -->
+      <div class="panel panel-primary">
+      
+        <!-- PANEL CABECERA DEL FORMULARIO -->
+        <div class="panel-heading">
+          <h4><span class="glyphicon glyphicon-pencil"></span> <b>Agregar nuevo dato de contacto</b></h4>
+        </div>
+
+
+        <div class="panel-body">
+        
+          <!-- errores -->
+          <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" 
+              aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            
+            <p><b>Se han producido algunos errores:</b></p>
+          </div>
+          <!-- errores -->
+        
+          <form class="form-horizontal" method="post" action="/datodecontacto/guardar" enctype="multipart/form-data">
+            <input type="hidden" name="cliente" value="$cliente">
+
+            <!-- DATO DE CONTACTO -->
+            <h2>Datos de contacto</h2>
+            <div class="form-group">
+                <label for="telefono" class="col-sm-3 control-label">Teléfono: </label>
+                <div class="col-sm-2">
+                  <input type="text" class="form-control" id="telefono" name="telefono">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="movil" class="col-sm-3 control-label">Móvil: </label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" id="movil" name="movil">
+                </div>
+            </div> 
+            
+            <div class="form-group">
+                <label for="email" class="col-sm-3 control-label">E-Mail: </label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="email" name="email">
+                </div>
+            </div> 
+            <!-- DATO DE CONTACTO -->
+            <!-- BOTÓN -->
+            <div class="form-group">
+                <label for="archivo" class="col-sm-3 control-label">&nbsp;</label>
+                <div class="col-sm-5">
+                  <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+            <!-- BOTÓN -->
+            
+          </form>
+        </div>
+      
+      </div>
+      <!-- contenido -->

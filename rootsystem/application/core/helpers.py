@@ -7,6 +7,6 @@ def compose(obj, cls):
     else:
         raise TypeError('{} no es de tipo {}'.format(type(obj), cls))
 
-def redirect(recurso, obj_id=""):
+def redirect(recurso):
     print(HTTP_HTML)
-    print("Location: {}/{}/{}\n".format(HOST, recurso, obj_id))
+    print("Location: {}/{}\n".format(HOST, recurso))
