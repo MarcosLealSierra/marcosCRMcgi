@@ -89,3 +89,8 @@ CREATE PROCEDURE agregar_columna()
 DELIMITER ;
 CALL agregar_columna();
 
+CREATE TABLE IF NOT EXISTS usuario(
+    usuario_id VARCHAR(32) NOT NULL PRIMARY KEY,
+    denominacion VARCHAR(75),
+    nivel INT(2)
+) ENGINE=InnoDB;

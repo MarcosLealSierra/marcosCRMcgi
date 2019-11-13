@@ -169,17 +169,24 @@ class ClienteController(object):
 
     def guardar(self):
         formulario = FieldStorage()
+        calle = formulario['calle'].value
+        numero = formulario['numero'].value
+        planta = formulario['planta'].value
+        puerta = formulario['puerta'].value
+        ciudad = formulario['ciudad'].value
+        denominacion = formulario['denominacion'].value
+        nif = formualio['nif'].value
 
         self.model.domicilio = Domicilio()
-        self.model.domicilio.calle = formulario['calle'].value
-        self.model.domicilio.numero = formulario['numero'].value
-        self.model.domicilio.planta = formulario['planta'].value
-        self.model.domicilio.puerta = formulario['puerta'].value
-        self.model.domicilio.ciudad = formulario['ciudad'].value
+        self.model.domicilio.calle = calle
+        self.model.domicilio.numero = numero
+        self.model.domicilio.planta = planta
+        self.model.domicilio.puerta = puerta
+        self.model.domicilio.ciudad = ciudad
         self.model.domicilio.insert()
         
-        self.model.denominacion = formulario['denominacion'].value
-        self.model.nif = formulario['nif'].value
+        self.model.denominacion = denominacion
+        self.model.nif = nif
         self.model.insert()
 
         dc = DatoDeContactoController()
@@ -201,16 +208,27 @@ class ClienteController(object):
 
     def actualizar(self):
         formulario = FieldStorage()
-        self.model.cliente_id = formulario['cliente_id'].value
-        self.model.select()
-        self.model.nif = formulario['nif'].value
-        self.model.denominacion = formulario['denominacion'].value
 
-        self.model.domicilio.calle = formulario['calle'].value
-        self.model.domicilio.numero = formulario['numero'].value
-        self.model.domicilio.planta = formulario['planta'].value
-        self.model.domicilio.puerta = formulario['puerta'].value
-        self.model.domicilio.ciudad = formulario['ciudad'].value
+        cliente_id = formulario['cliente_id'].value
+        nif = formulario['nif'].value
+        denominacion = formulario['denominacion'].value
+        
+        domicilio.calle = formulario['calle'].value
+        domicilio.numero = formulario['numero'].value
+        domicilio.planta = formulario['planta'].value
+        domicilio.puerta = formulario['puerta'].value
+        domicilio.ciudad = formulario['ciudad'].value
+
+        self.model.cliente_id = cliente_id
+        self.model.select()
+        self.model.nif = nif
+        self.model.denominacion = denominacion
+
+        self.model.domicilio.calle = calle
+        self.model.domicilio.numero = numero
+        self.model.domicilio.planta = planta
+        self.model.domicilio.puerta = puerta
+        self.model.domicilio.ciudad = ciudad
         self.model.domicilio.update()
 
         self.model.update()

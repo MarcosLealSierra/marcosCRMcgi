@@ -170,10 +170,11 @@ class PedidoController(object):
         formulario = FieldStorage()
         productos = formulario['producto_id']
         cantidades = formulario['cantidad']
+        cliente = formulario['cliente'].value
     
         self.model.estado = 1
         self.model.fecha = strftime("%Y-%m-%d")
-        self.model.cliente = formulario['cliente'].value
+        self.model.cliente = cliente
         self.model.insert()
        
         self.model.producto_collection = []
@@ -239,4 +240,3 @@ class PedidoCollector(Collector):
            pedido.producto_collection = []
            pedido.select()
            self.coleccion.append(pedido)
-           

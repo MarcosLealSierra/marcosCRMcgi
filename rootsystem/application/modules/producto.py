@@ -107,8 +107,12 @@ class ProductoController(Controller):
 
     def guardar(self):
         formulario = FieldStorage()
-        self.model.denominacion = formulario['denominacion'].value
-        self.model.precio = formulario['precio'].value
+        
+        denominacion = formulario['denominacion'].value
+        precio = formulario['precio'].value
+        
+        self.model.denominacion = denominacion
+        self.model.precio = precio
         self.model.insert()
 
         redirect("producto/ver", self.model.producto_id)
@@ -127,9 +131,14 @@ class ProductoController(Controller):
 
     def actualizar(self):
         formulario = FieldStorage()
-        self.model.producto_id = formulario['producto_id'].value
-        self.model.denominacion = formulario['denominacion'].value
-        self.model.precio = formulario['precio'].value
+
+        producto_id = formulario['producto_id'].value
+        denominacion = formulario['denominacion'].value
+        precio = formulario['precio'].value
+        
+        self.model.producto_id = producto_id
+        self.model.denominacion = denominacion
+        self.model.precio = precio
         self.model.update()
         
         redirect("producto/ver", self.model.producto_id)
