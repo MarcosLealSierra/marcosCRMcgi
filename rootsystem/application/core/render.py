@@ -2,7 +2,7 @@
 from re import search
 from string import Template as PyTemplate
 
-from config import author_data
+from settings import author_data, HTTP_HTML
 
 
 class Template:
@@ -29,3 +29,9 @@ class Template:
         regex = "<!--{t}-->(.|\n)+<!--{t}-->".format(t=tag)
         code = search(regex, self.template).group(0)
         return code
+
+    @staticmethod
+    def print(string):
+        print(HTTP_HTML)
+        print("\n")
+        print(string)

@@ -83,14 +83,13 @@ CREATE PROCEDURE agregar_columna()
 			SET 			domicilio = (
 				SELECT domicilio_id FROM domicilio LIMIT 1
 			);
-		)
 		END IF;
 	END //
 DELIMITER ;
 CALL agregar_columna();
 
-CREATE TABLE IF NOT EXISTS usuario(
-    usuario_id VARCHAR(32) NOT NULL PRIMARY KEY,
-    denominacion VARCHAR(75),
-    nivel INT(2)
+CREATE TABLE IF NOT EXISTS `user`(
+    user_id VARCHAR(32) NOT NULL PRIMARY KEY,
+    denomination VARCHAR(75),
+    level INT(2)
 ) ENGINE=InnoDB;

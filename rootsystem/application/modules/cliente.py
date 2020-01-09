@@ -3,15 +3,16 @@ from re import sub
 
 from core.db import DBQuery
 from core.collector import Collector
-from core.helpers import compose, redirect
+from core.helpers import compose, get_form_value, redirect, Sanitizer
 from core.factory import Factory
 from core.render import Template
 from core.stdobject import StdObject
 from modules.datodecontacto import DatoDeContacto, DatoDeContactoController
 from modules.domicilio import Domicilio
 from modules.pedido import Pedido
-from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
-    STATIC_PATH, TEMPLATE_PATH
+from settings import ARG, db_data, ERR_CALLE_NO_VALIDA, ERR_NUMERO_NO_VALIDO, \
+    ERR_PLANTA_NO_VALIDA, ERR_PUERTA_NO_VALIDA, ERR_CIUDAD_NO_VALIDA, \
+    HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, STATIC_PATH, TEMPLATE_PATH
 
 
 class Cliente(StdObject):
@@ -77,12 +78,26 @@ class Cliente(StdObject):
 
 class ClienteView(object):
     
-    def agregar(self):
+    def agregar(self, errores=[], fields={}):
+        errores = "<br>".join(errores)
         with open("{}/cliente_agregar.html".format(STATIC_PATH), "r") as f:
             form = f.read()
 
-        regex = "<!-- errores -->(.|\n)+<!-- errores -->"
-        form = sub(regex, '', form)
+        dictionary = dict()
+        dictionary['errores'] = errores
+        dictionary['calle'] = get_form_value("calle")
+        dictionary['numero'] = get_form_value("numero")
+        dictionary['puerta'] = get_form_value("puerta")
+        dictionary['ciudad'] = get_form_value("ciudad")
+        dictionary['planta'] = get_form_value("planta")
+        dictionary['denominacion'] = get_form_value("denominacion")
+        dictionary['nif'] = get_form_value("nif")
+
+        if not errores:
+            regex = "<!-- errores -->(.|\n)+<!-- errores -->"
+            form = sub(regex, '', form)
+
+        form = Template(base=form).render(dictionary)
 
         print(HTTP_HTML, "\n")
         print(Template(TEMPLATE_PATH).render_inner(form))
@@ -169,13 +184,37 @@ class ClienteController(object):
 
     def guardar(self):
         formulario = FieldStorage()
-        calle = formulario['calle'].value
-        numero = formulario['numero'].value
-        planta = formulario['planta'].value
-        puerta = formulario['puerta'].value
-        ciudad = formulario['ciudad'].value
-        denominacion = formulario['denominacion'].value
-        nif = formualio['nif'].value
+        calle = Sanitizer.filter_string(formulario['calle'].value)
+        ciudad = Sanitizer.filter_string(formulario['ciudad'].value)
+        denominacion = Sanitizer.filter_string(formulario['denominacion'].value)
+        numero = Sanitizer.convert_to_int(formulario['numero'].value)
+        planta = Sanitizer.convert_to_int(formulario['planta'].value)
+        puerta = Sanitizer.purge_alnum(formulario['puerta'].value).upper()
+        nif = formulario['nif'].value
+ 
+        errores = []
+        
+        if not (numero >= 1 and numero <= 15000):
+            errores.append(ERR_NUMERO_NO_VALIDO)
+
+        if not (planta >= 0 and planta <= 200):
+            errores.append(ERR_PLANTA_NO_VALIDA)
+
+        if not (len(puerta) >= 1 and len(puerta) <= 2):
+            errores.append(ERR_PUERTA_NO_VALIDA)
+
+        if not (len(calle) >= 1 and len(calle) <= 50):
+            errores.append(ERR_CALLE_NO_VALIDA)
+        
+        if not (len(ciudad) >= 4 and len(calle) <= 30):
+            errores.append(ERR_CIUDAD_NO_VALIDA)
+              
+        if errores:
+            variables = locals()
+            for k in formulario.keys(): 
+                if k in variables: formulario[k].value = locals()[k]
+            self.view.agregar(errores, formulario)
+            exit()
 
         self.model.domicilio = Domicilio()
         self.model.domicilio.calle = calle
@@ -192,7 +231,7 @@ class ClienteController(object):
         dc = DatoDeContactoController()
         dc.guardar(formulario, self.model.cliente_id)
 
-        redirect("cliente/ver", self.model.cliente_id)
+        redirect("cliente/ver/{}".format(self.model.cliente_id))
 
     def ver(self):
         self.model.cliente_id = int(ARG) 
