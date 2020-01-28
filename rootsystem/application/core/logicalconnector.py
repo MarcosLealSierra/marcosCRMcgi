@@ -3,7 +3,7 @@ from core.helpers import compose
 from settings import db_data
 
 
-class LoglConnector(object):
+class LogicalConnector(object):
     
     _clase_compuesto = ''           
     _propiedad_id_compuesto = ''   

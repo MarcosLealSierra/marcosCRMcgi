@@ -5,7 +5,7 @@ from core.db import DBQuery
 from core.collector import Collector
 from core.factory import ControllerFactory, Factory
 from core.helpers import compose, redirect
-from core.loglconnector import LoglConnector
+from core.logicalconnector import LogicalConnector
 from core.render import Template
 from core.stdobject import StdObject
 from modules.producto import Producto
@@ -54,7 +54,7 @@ class Pedido(object):
         self.cliente = resultados[2]
 
         if hasattr(self, 'producto_collection'):
-            cl = LoglConnector(self, 'Producto')
+            cl = LogicalConnector(self, 'Producto')
             cl.select()
 
     def update(self):
@@ -190,7 +190,7 @@ class PedidoController(object):
             self.model.producto_collection.append(pr)
             pr.fm = cantidades[i].value
 
-        cl = LoglConnector(self.model, 'Producto')
+        cl = LogicalConnector(self.model, 'Producto')
         cl.insert()
         
         redirect("pedido/ver", self.model.pedido_id)

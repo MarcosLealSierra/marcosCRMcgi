@@ -17,7 +17,7 @@ DB_PASS = "mysqlroot"
 DB_NAME = "marcoscrmcgi"
 db_data = [DB_HOST, DB_USER, DB_PASS, DB_NAME]
 
-fieldstorage = FieldStorage()
+POST = FieldStorage()
 
 author_data = {'AUTOR': 'Marcos Leal Sierra', 'ANCHOR': 'marcoslealsierra.com',
     'ANY': ''}

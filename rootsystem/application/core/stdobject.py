@@ -1,5 +1,5 @@
 from core.db import DBQuery
-from core.loglconnector import LoglConnector
+from core.logicalconnector import LogicalConnector
 from settings import HTTP_HTML, db_data
 
 

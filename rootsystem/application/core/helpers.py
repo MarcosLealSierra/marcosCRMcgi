@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from hashlib import new
-from settings import fieldstorage, HOST, HTTP_HTML
+from settings import HOST, HTTP_HTML, POST
 from sys import version_info as version
 
 
@@ -78,7 +78,7 @@ def redirect(recurso):
 
 
 def get_form_value(key):
-    return "" if not key in fieldstorage else fieldstorage[key].value
+    return "" if not key in POST else POST[key].value
 
 
 def get_hash(algorithm, string):

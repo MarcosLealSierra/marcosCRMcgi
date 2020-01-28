@@ -1,6 +1,9 @@
+from os.path import isfile
+
 from core.db import DBQuery
 from core.helpers import get_form_value, get_hash, redirect
 from core.render import Template
+from core.sessions import Sessions
 from settings import CREDENTIAL_PATH, db_data, HTTP_HTML, STATIC_PATH, \
     TEMPLATE_PATH
 
@@ -48,7 +51,6 @@ class UserView(object):
         
         dictionary = dict()
         dictionary['errors'] = errors
-        #dictionary['username'] = get_form_value("username")
         dictionary['denomination'] = get_form_value("denomination")
         dictionary['level'] = get_form_value("level")
         
@@ -83,8 +85,7 @@ class UserController(object):
         user_id = get_hash("sha384", get_form_value("username"))
         user_id = get_hash("md5", user_id)
         denomination = get_form_value("denomination")
-        #level = int(get_form_value("level"))
-        level = 1
+        level = int(get_form_value("level"))
 
         salt_username = get_form_value("username")[0:2]
         salt_password = get_form_value("password")[1:]
@@ -103,10 +104,24 @@ class UserController(object):
         Template.print(vars(self.model))
 
     def login(self):
+        Sessions.start()
         self.view.login()
 
     def validar(self):
-        pass
+        user_hash = get_hash("sha256", get_form_value("username"))
+        pass_hash = get_hash("sha512", get_form_value("password"))
+        user_id = get_hash("sha384", get_form_value("username"))
+        user_id = get_hash("md5", user_id)
+        salt_username = get_form_value("username")[0:2]
+        salt_password = get_form_value("password")[1:]
+        salt = get_hash("sha224", "{}{}".format(salt_username, salt_password))
+        credential = get_hash("sha1", "{}{}{}".format(salt, user_hash, pass_hash))
+        filename = "{}/.{}".format(CREDENTIAL_PATH, credential)
+
+        if isfile(filename):
+            #sesiónnnnn
+        else:
+            redirect("/user/login")
 
     def logout(self):
         # TODO destruir sesión
