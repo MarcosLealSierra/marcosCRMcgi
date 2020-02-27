@@ -4,7 +4,7 @@ from re import sub
 from core.db import DBQuery
 from core.collector import Collector
 from core.controller import Controller
-from core.helpers import redirect
+from core.helpers import redirect, get_form_value
 from core.render import Template
 from core.stdobject import StdObject
 from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
@@ -129,19 +129,17 @@ class ProductoController(Controller):
         
         self.view.editar(self.model)
 
-    def actualizar(self):
-        formulario = FieldStorage()
+    def actualizar(self): 
+        producto_id = get_form_value('producto_id')
+        denominacion = get_form_value('denominacion')
+        precio = get_form_value('precio')
 
-        producto_id = formulario['producto_id'].value
-        denominacion = formulario['denominacion'].value
-        precio = formulario['precio'].value
-        
         self.model.producto_id = producto_id
         self.model.denominacion = denominacion
         self.model.precio = precio
         self.model.update()
         
-        redirect("producto/ver", self.model.producto_id)
+        redirect("producto/ver/{}".format(self.model.producto_id))
 
     def eliminar(self):
         self.model.producto_id = ARG

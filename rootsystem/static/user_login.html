@@ -1,0 +1,55 @@
+    <!-- contenido -->
+      <div class="panel panel-primary">
+      
+        <!-- PANEL CABECERA DEL FORMULARIO -->
+        <div class="panel-heading">
+          <h4><span class="glyphicon glyphicon-pencil"></span> <b>User login</b></h4>
+        </div>
+
+
+        <div class="panel-body">
+        
+          <!-- errores -->
+          <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" 
+              aria-label="Close"><span aria-hidden="true">&times;</span>
+            </button>
+            
+            <p><b>Se han producido algunos errores:</b></p>
+            $errores
+          </div>
+          <!-- errores -->
+        
+          <form class="form-horizontal" method="post" action="/user/validar" enctype="multipart/form-data">
+
+            <!-- USUARIO -->
+            <h2>User data</h2>
+            <div class="form-group">
+                <label for="username" class="col-sm-3 control-label">Username: </label>
+                <div class="col-sm-5">
+                  <input type="text" class="form-control" id="username" name="username">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="nif" class="col-sm-3 control-label">Password: </label>
+                <div class="col-sm-2">
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+            </div> 
+            <!-- USUARIO -->
+
+            <!-- BOTÓN -->
+            <div class="form-group">
+                <label for="archivo" class="col-sm-3 control-label">&nbsp;</label>
+                <div class="col-sm-5">
+                  <button type="submit" class="btn btn-primary">Log in</button>
+                </div>
+            </div>
+            <!-- BOTÓN -->
+            
+          </form>
+        </div>
+      
+      </div>
+      <!-- contenido -->

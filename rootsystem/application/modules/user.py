@@ -1,4 +1,7 @@
-from os.path import isfile
+from os import unlink, path
+from os.path import isfile, getmtime
+from re import sub
+from time import time
 
 from core.db import DBQuery
 from core.helpers import get_form_value, get_hash, redirect
@@ -6,8 +9,7 @@ from core.render import Template
 from core.sessions import Sessions
 from settings import CREDENTIAL_PATH, db_data, HTTP_HTML, STATIC_PATH, \
     TEMPLATE_PATH
-
-from re import sub
+from trbconf import TRB_SESS_DIR
 
 
 class User(object):
@@ -63,11 +65,33 @@ class UserView(object):
         print(HTTP_HTML, "\n")
         print(Template(TEMPLATE_PATH).render_inner(form))
 
-    def login(self):
-        fichero = "{}/user_login".format(STATIC_PATH)
-        formulario = Template(fichero).get_template()
+    def login(self, errors=[]):
+        errors = "<br>".join(errors)
+        with open("{}/user_login.html".format(STATIC_PATH), "r") as f:
+            form = f.read()
+
+        dictionary = dict()
+        
+        if not errors:
+            regex = "<!-- errores -->(.|\n)+<!-- errores -->"
+            form = sub(regex, '', form)
+        
+        form = Template(base=form).render(dictionary)
+        
         print(HTTP_HTML, "\n")
-        print(Template(TEMPLATE_PATH).render_inner(formulario))
+        print(Template(TEMPLATE_PATH).render_inner(form))
+
+    def timeout(self):
+        print(HTTP_HTML, "\n")
+        timeout = 1440
+        ficheros = os.listdir(TRB_SESS_DIR)
+        for fichero in ficheros:
+            ruta = path.join(TRB_SESS_DIR, fichero)
+            access_date = path.getatime(ruta)
+            time = time() - access_date
+            if time > timeout:
+                unlink(ruta)
+                print(time, ruta)
 
 
 class UserController(object):
@@ -77,6 +101,7 @@ class UserController(object):
         self.view = UserView()
 
     def agregar(self):
+        Sessions.check()
         self.view.agregar()
 
     def guardar(self):
@@ -101,6 +126,8 @@ class UserController(object):
         self.model.level = level
         self.model.insert()
 
+        # FIXME
+        # Redireccionar a listado de usuarios
         Template.print(vars(self.model))
 
     def login(self):
@@ -119,10 +146,15 @@ class UserController(object):
         filename = "{}/.{}".format(CREDENTIAL_PATH, credential)
 
         if isfile(filename):
-            #sesiónnnnn
+            Sessions.create()
+            #Sessions.set("USER_ID", user_id)
+            redirect("/user/agregar")
         else:
             redirect("/user/login")
 
     def logout(self):
-        # TODO destruir sesión
+        Sessions.destroy()
         redirect("/user/login")
+
+    def mantenimiento(self):
+        self.view.mantenimiento()

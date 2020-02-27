@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 #-*- coding: utf-8 -*-
-
 from os.path import isfile
 
+from core.sessions import Sessions
 from settings import MODULE_PATH, PACKAGE, CONTROLLER, RESOURCE, HTTP_404,\
     HTTP_HTML, SHOW_ERROR_404, HTTP_REDIRECT, MODULE
+
+
+Sessions.update()
 
 error_module = error_resource = True
 

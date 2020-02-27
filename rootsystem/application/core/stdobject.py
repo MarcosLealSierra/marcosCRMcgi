@@ -29,11 +29,11 @@ class StdObject(object):
             #)
 
         #self.__dict__['{}_id'.format(clase)] = DBQuery(db_data).execute(sql)
-    
+
     def select(self):
         clase = self.__class__.__name__.lower()
         propiedad_id = '{}_id'.format(clase)
-        
+
         propiedades = vars(self)
 
         campos_tabla = []
@@ -42,12 +42,12 @@ class StdObject(object):
                 campos_tabla.append(campo)
 
         sql = "SELECT {cp} FROM {c} WHERE {c}_id = {pi}".format(
-            cp=", ".join(campos_tabla), 
-            c=clase, 
+            cp=", ".join(campos_tabla),
+            c=clase,
             pi=self.__dict__[propiedad_id]
         )
         resultados = DBQuery(db_data).execute(sql)[0]
-        
+
         for i, p in enumerate(propiedades.keys()):
             compositor = "{}".format(p.capitalize())
             compositor_id = '{}_id'.format(p)
@@ -64,7 +64,7 @@ class StdObject(object):
                 # según el conector lógico o el get auxiliar
             else:
                 self.__dict__[p] = resultados[i]
-    
+
     #def update(self):
         #clase = self.__class__.__name__.lower()
         #propiedad_id = "{}_id".format(clase)
@@ -76,7 +76,7 @@ class StdObject(object):
                 #elementos_query.append("{} = '{}'".format(propiedades[i], v))
             #else:
                 #elementos_query.append("{} = {}".format(propiedades[i], v))
- 
+
         #sql = """
             #UPDATE      {c}
             #SET         {e}
@@ -86,7 +86,7 @@ class StdObject(object):
             #e=", ".join(elementos_query),
             #pi=self.__dict__[propiedad_id]
         #)
-        
+
         #print(HTTP_HTML, "\n")
         #print(sql, "<br><br>")
         #DBQuery(db_data).execute(sql)
@@ -96,7 +96,7 @@ class StdObject(object):
         propiedad_id = '{}_id'.format(clase)
 
         sql = "DELETE FROM {c} WHERE {c}_id = {pi}".format(
-            c=clase, 
+            c=clase,
             pi=self.__dict__[propiedad_id]
         )
         DBQuery(db_data).execute(sql)
