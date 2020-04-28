@@ -6,6 +6,7 @@ from core.collector import Collector
 from core.helpers import compose, get_form_value, redirect, Sanitizer
 from core.factory import Factory
 from core.render import Template
+from core.sessions import Sessions
 from core.stdobject import StdObject
 from modules.datodecontacto import DatoDeContacto, DatoDeContactoController
 from modules.domicilio import Domicilio
@@ -24,13 +25,13 @@ class Cliente(StdObject):
         self.domicilio = compose(domicilio, Domicilio)
         self.datodecontacto_collection = []
         self.pedido_collection = []
-    
+
     def add_datodecontacto(self, datodecontacto):
         self.datodecontacto_collection.append(compose(datodecontacto, DatoDeContacto))
 
     def add_pedido(self, pedido):
         self.pedido_collection.append(compose(pedido, Pedido))
-    
+
     def insert(self):
         sql = """
             insert into     cliente
@@ -42,10 +43,10 @@ class Cliente(StdObject):
             self.domicilio.domicilio_id
         )
         self.cliente_id = DBQuery(db_data).execute(sql)
-    
+
     def select(self, producto_collection=False):
         super(Cliente, self).select()
-       
+
         pedidos = Pedido.get_pedidos(self.cliente_id)
         for tupla in pedidos:
             pedido = Pedido()
@@ -77,7 +78,7 @@ class Cliente(StdObject):
 
 
 class ClienteView(object):
-    
+
     def agregar(self, errores=[], fields={}):
         errores = "<br>".join(errores)
         with open("{}/cliente_agregar.html".format(STATIC_PATH), "r") as f:
@@ -101,7 +102,7 @@ class ClienteView(object):
 
         print(HTTP_HTML, "\n")
         print(Template(TEMPLATE_PATH).render_inner(form))
-    
+
     def ver(self, cliente):
         ficha = Template(
             '{}/cliente_ver.html'.format(STATIC_PATH)).get_template()
@@ -128,7 +129,7 @@ class ClienteView(object):
 
         diccionario = vars(cliente)
         diccionario.update(vars(cliente.domicilio))
-        
+
         ficha = Template(base=ficha).render(diccionario)
 
         print(HTTP_HTML, "\n")
@@ -191,9 +192,9 @@ class ClienteController(object):
         planta = Sanitizer.convert_to_int(formulario['planta'].value)
         puerta = Sanitizer.purge_alnum(formulario['puerta'].value).upper()
         nif = formulario['nif'].value
- 
+
         errores = []
-        
+
         if not (numero >= 1 and numero <= 15000):
             errores.append(ERR_NUMERO_NO_VALIDO)
 
@@ -205,10 +206,10 @@ class ClienteController(object):
 
         if not (len(calle) >= 1 and len(calle) <= 50):
             errores.append(ERR_CALLE_NO_VALIDA)
-        
+
         if not (len(ciudad) >= 4 and len(calle) <= 30):
             errores.append(ERR_CIUDAD_NO_VALIDA)
-              
+
         if errores:
             variables = locals()
             for k in formulario.keys(): 
@@ -223,7 +224,7 @@ class ClienteController(object):
         self.model.domicilio.puerta = puerta
         self.model.domicilio.ciudad = ciudad
         self.model.domicilio.insert()
-        
+
         self.model.denominacion = denominacion
         self.model.nif = nif
         self.model.insert()
@@ -242,7 +243,7 @@ class ClienteController(object):
     def editar(self):
         self.model.cliente_id = int(ARG)
         self.model.select()
-        
+
         self.view.editar(self.model)
 
     def actualizar(self):
@@ -251,7 +252,7 @@ class ClienteController(object):
         cliente_id = formulario['cliente_id'].value
         nif = formulario['nif'].value
         denominacion = formulario['denominacion'].value
-        
+
         domicilio.calle = formulario['calle'].value
         domicilio.numero = formulario['numero'].value
         domicilio.planta = formulario['planta'].value
@@ -271,16 +272,17 @@ class ClienteController(object):
         self.model.domicilio.update()
 
         self.model.update()
-        
+
         redirect("cliente/ver", self.model.cliente_id)
 
     def eliminar(self):
         self.model.cliente_id = int(ARG)
         self.model.delete()
-        
+
         redirect("cliente/listar")
 
     def listar(self):
+        Sessions.check()
         c = Collector()
         c.get("Cliente")
         self.view.listar(c.coleccion)

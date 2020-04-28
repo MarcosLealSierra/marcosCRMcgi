@@ -11,8 +11,8 @@ class Domicilio(StdObject):
         self.numero = ''
         self.planta = 0
         self.puerta = ''
-        self.ciudad = '' 
-    
+        self.ciudad = ''
+
     def insert(self):
         sql = """
             insert into     domicilio

@@ -6,6 +6,7 @@ from core.collector import Collector
 from core.controller import Controller
 from core.helpers import redirect, get_form_value
 from core.render import Template
+from core.sessions import Sessions
 from core.stdobject import StdObject
 from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
     STATIC_PATH, TEMPLATE_PATH
@@ -17,7 +18,7 @@ class Producto(StdObject):
         self.producto_id = 0
         self.denominacion = ''
         self.precio = 0.0
-     
+
     def insert(self):
         sql = """
             INSERT INTO     producto
@@ -40,6 +41,7 @@ class Producto(StdObject):
             self.producto_id
         )
         DBQuery(db_data).execute(sql)
+
 
 class ProductoView(object):
 
@@ -80,24 +82,10 @@ class ProductoView(object):
         print(Template(TEMPLATE_PATH).render_inner(ficha))
 
     def listar(self, coleccion):
-        pila = []
-        tabla = Template(
-            '{}/producto_listar.html'.format(STATIC_PATH)
-        ).get_template()
-        fila = Template(base=tabla).extract('fila')
-
-        for producto in coleccion:
-            diccionario = vars(producto)
-            render = Template(base=fila).render(diccionario)
-            pila.append(render)
-
-        pila = ''.join(pila)
-
-        contenido = tabla.replace(fila, pila)
-
-        print(HTTP_HTML)
-        print("")
-        print(Template(TEMPLATE_PATH).render_inner(contenido))
+        archivo = '{}/producto_listar.html'.format(STATIC_PATH)
+        contenido = Template(archivo).render_dict(coleccion, tag="fila")
+        contenido = Template(TEMPLATE_PATH).render_inner(contenido)
+        Template.print(contenido)
 
 
 class ProductoController(Controller):
@@ -107,10 +95,10 @@ class ProductoController(Controller):
 
     def guardar(self):
         formulario = FieldStorage()
-        
+
         denominacion = formulario['denominacion'].value
         precio = formulario['precio'].value
-        
+
         self.model.denominacion = denominacion
         self.model.precio = precio
         self.model.insert()
@@ -118,7 +106,7 @@ class ProductoController(Controller):
         redirect("producto/ver", self.model.producto_id)
 
     def ver(self):
-        self.model.producto_id = ARG 
+        self.model.producto_id = ARG
         self.model.select()
 
         self.view.ver(self.model)
@@ -126,10 +114,10 @@ class ProductoController(Controller):
     def editar(self):
         self.model.producto_id = ARG
         self.model.select()
-        
+
         self.view.editar(self.model)
 
-    def actualizar(self): 
+    def actualizar(self):
         producto_id = get_form_value('producto_id')
         denominacion = get_form_value('denominacion')
         precio = get_form_value('precio')
@@ -138,16 +126,17 @@ class ProductoController(Controller):
         self.model.denominacion = denominacion
         self.model.precio = precio
         self.model.update()
-        
+
         redirect("producto/ver/{}".format(self.model.producto_id))
 
     def eliminar(self):
         self.model.producto_id = ARG
         self.model.delete()
-        
+
         redirect("producto/listar")
 
     def listar(self):
+        #Sessions.check()
         c = Collector()
-        c.get("Producto")	
+        c.get("Producto")
         self.view.listar(c.coleccion)

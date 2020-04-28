@@ -4,12 +4,12 @@ from settings import db_data
 
 
 class LogicalConnector(object):
-    
-    _clase_compuesto = ''           
-    _propiedad_id_compuesto = ''   
-    _compositor = ''                
-    _propiedad_id_compositor = ''   
-    
+
+    _clase_compuesto = ''
+    _propiedad_id_compuesto = ''
+    _compositor = ''
+    _propiedad_id_compositor = ''
+
     def __init__(self, compuesto, compositor):
         self._set_variables(compuesto, compositor)
 
@@ -29,7 +29,7 @@ class LogicalConnector(object):
         return self.compuesto.__dict__[compuesto_collection]
 
     def delete(self):
-        sql = """DELETE FROM  {compositor}{compuesto} 
+        sql = """DELETE FROM  {compositor}{compuesto}
                  WHERE        compuesto = {pi}""".format(
             compositor=self._compositor,
             compuesto=self._clase_compuesto,
@@ -70,7 +70,7 @@ class LogicalConnector(object):
                 pi=self.compuesto.__dict__[self._propiedad_id_compuesto]
             )
         resultados = DBQuery(db_data).execute(sql)
-        
+
         modulo = __import__(
             'modules.{}'.format(self._compositor),
             fromlist=[self._compositor.capitalize()]

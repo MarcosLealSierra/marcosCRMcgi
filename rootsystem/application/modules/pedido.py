@@ -24,12 +24,12 @@ class Pedido(object):
 
     def add_producto(self, producto):
         self.producto_collection.append(compose(producto, Producto))
-    
+
     @staticmethod
     def get_pedidos(oid=0):
         sql = "SELECT pedido_id FROM pedido WHERE cliente = {}".format(oid)
         return DBQuery(db_data).execute(sql)
-    
+
     def insert(self):
         sql = """
             INSERT INTO     pedido
@@ -91,7 +91,7 @@ class PedidoView(object):
 
         pila = ''.join(pila)
         contenido = tabla.replace(fila, pila)
-        
+
         diccionario = dict(cliente=cliente_id)
         contenido = Template(base=contenido).render(diccionario)
 
@@ -100,20 +100,14 @@ class PedidoView(object):
         print(Template(TEMPLATE_PATH).render_inner(contenido))
 
     def ver(self, pedido, denominacion):
-        ficha = Template(
-            '{}/pedido_ver.html'.format(STATIC_PATH)).get_template()
-        fila_producto = Template(base=ficha).extract('filapepro')
-        pila = []
+        coleccion = pedido.producto_collection
         total = []
-        for producto in pedido.producto_collection:
-            diccionario = vars(producto)
-            diccionario['subtotal'] = producto.fm * producto.precio
-            total.append(diccionario['subtotal'])
-            render = Template(base=fila_producto).render(diccionario)
-            pila.append(render)
+        for producto in coleccion:
+            producto.subtotal = producto.fm * producto.precio
+            total.append(producto.subtotal)
 
-        pila = ''.join(pila)
-        contenido = ficha.replace(fila_producto, pila)
+        archivo = '{}/pedido_ver.html'.format(STATIC_PATH)
+        contenido = Template(archivo).render_dict(coleccion, tag="filapepro")
 
         cliente = Factory().make('Cliente', pedido.cliente)
         domicilio = cliente.domicilio
@@ -171,12 +165,12 @@ class PedidoController(object):
         productos = formulario['producto_id']
         cantidades = formulario['cantidad']
         cliente = formulario['cliente'].value
-    
+
         self.model.estado = 1
         self.model.fecha = strftime("%Y-%m-%d")
         self.model.cliente = cliente
         self.model.insert()
-       
+
         self.model.producto_collection = []
 
         if not isinstance(productos, list):
@@ -192,7 +186,7 @@ class PedidoController(object):
 
         cl = LogicalConnector(self.model, 'Producto')
         cl.insert()
-        
+
         redirect("pedido/ver", self.model.pedido_id)
 
     def ver(self):
@@ -213,13 +207,13 @@ class PedidoController(object):
         self.model.update()
 
         self.view.editar(self.model.estado)
-    
+
     def eliminar(self):
         self.model.pedido_id = int(ARG)
         self.model.select()
         cliente = Factory().make('Cliente', self.model.cliente)
         self.model.delete()
-        
+
         redirect("cliente/ver", cliente.cliente_id)
 
     def listar(self):

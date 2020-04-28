@@ -25,8 +25,8 @@ class User(object):
                     (user_id, denomination, level)
         VALUES      ('{}', '{}', {})
         """.format(
-            self.user_id, 
-            self.denomination, 
+            self.user_id,
+            self.denomination,
             self.level
         )
 
@@ -38,7 +38,7 @@ class User(object):
         FROM    user
         WHERE   user_id = '{}'
         """.format(self.user_id)
-        
+
         resultados = DBQuery(db_data).execute(sql)[0]
         self.denomination = resultados[0]
         self.level = resultados[1]
@@ -50,18 +50,18 @@ class UserView(object):
         errors = "<br>".join(errors)
         with open("{}/user_agregar.html".format(STATIC_PATH), "r") as f:
             form = f.read()
-        
+
         dictionary = dict()
         dictionary['errors'] = errors
         dictionary['denomination'] = get_form_value("denomination")
         dictionary['level'] = get_form_value("level")
-        
+
         if not errors:
             regex = "<!-- errores -->(.|\n)+<!-- errores -->"
             form = sub(regex, '', form)
-        
+
         form = Template(base=form).render(dictionary)
-        
+
         print(HTTP_HTML, "\n")
         print(Template(TEMPLATE_PATH).render_inner(form))
 
@@ -71,13 +71,13 @@ class UserView(object):
             form = f.read()
 
         dictionary = dict()
-        
+
         if not errors:
             regex = "<!-- errores -->(.|\n)+<!-- errores -->"
             form = sub(regex, '', form)
-        
+
         form = Template(base=form).render(dictionary)
-        
+
         print(HTTP_HTML, "\n")
         print(Template(TEMPLATE_PATH).render_inner(form))
 
@@ -95,13 +95,13 @@ class UserView(object):
 
 
 class UserController(object):
-    
+
     def __init__(self):
         self.model = User()
         self.view = UserView()
 
     def agregar(self):
-        Sessions.check()
+        #Sessions.check()
         self.view.agregar()
 
     def guardar(self):
@@ -145,16 +145,22 @@ class UserController(object):
         credential = get_hash("sha1", "{}{}{}".format(salt, user_hash, pass_hash))
         filename = "{}/.{}".format(CREDENTIAL_PATH, credential)
 
+        #print(HTTP_HTML, "\n")
+        #print(filename); exit()
+
         if isfile(filename):
-            Sessions.create()
-            #Sessions.set("USER_ID", user_id)
-            redirect("/user/agregar")
+            #sess_file = Sessions.get_all()
+            variable = Sessions.create()
+            print(HTTP_HTML, "\n")
+            print(variable); exit() 
+            Sessions.set("USER_ID", user_id)
+            redirect("cliente/listar")
         else:
-            redirect("/user/login")
+            redirect("user/login")
 
     def logout(self):
         Sessions.destroy()
-        redirect("/user/login")
+        redirect("user/login")
 
     def mantenimiento(self):
         self.view.mantenimiento()

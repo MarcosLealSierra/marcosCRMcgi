@@ -15,9 +15,9 @@ class Template:
         with open(self.path, 'r') as t:
             return t.read()
 
-    def render(self, values):
+    def render(self, values={}):
         values.update(author_data)
-        return PyTemplate(self.template).safe_substitute(values) 
+        return PyTemplate(self.template).safe_substitute(values)
 
     def render_inner(self, inner):
         values = dict(content=inner)
@@ -29,6 +29,20 @@ class Template:
         regex = "<!--{t}-->(.|\n)+<!--{t}-->".format(t=tag)
         code = search(regex, self.template).group(0)
         return code
+
+    def render_dict(self, coleccion, tag):
+        tabla = Template(self.path).get_template()
+        fila = Template(base=tabla).extract(tag)
+        pila = []
+
+        for producto in coleccion:
+            diccionario = vars(producto)
+            render = Template(base=fila).render(diccionario)
+            pila.append(render)
+
+        pila = ''.join(pila)
+        contenido = tabla.replace(fila, pila)
+        return contenido
 
     @staticmethod
     def print(string):

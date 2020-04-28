@@ -14,12 +14,12 @@ class DatoDeContacto(object):
         self.denominacion = ''
         self.valor = ''
         self.cliente = 0
-    
+
     @staticmethod
     def get_datosdecontacto(oid=0):
         sql = "SELECT datodecontacto_id FROM datodecontacto WHERE cliente = {}".format(oid)
         return DBQuery(db_data).execute(sql)
-    
+
     def insert(self):
         sql = """
             INSERT INTO     datodecontacto

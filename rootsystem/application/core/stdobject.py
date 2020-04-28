@@ -92,11 +92,12 @@ class StdObject(object):
         #DBQuery(db_data).execute(sql)
 
     def delete(self):
-        clase = self.__class__.__name__.lower()
-        propiedad_id = '{}_id'.format(clase)
-
-        sql = "DELETE FROM {c} WHERE {c}_id = {pi}".format(
-            c=clase,
-            pi=self.__dict__[propiedad_id]
-        )
+        class_name = self.__class__.__name__
+        class_name = class_name.lower()
+        id_value = getattr(self, '{}_id'.format(class_name))
+        sql = """
+            DELETE
+            FROM     {}
+            WHERE    {}_id = {}
+        """.format(class_name, class_name, id_value)
         DBQuery(db_data).execute(sql)
