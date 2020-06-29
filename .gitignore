@@ -1,3 +1,5 @@
 private/
 logs/
 *.pyc
+private/.credentials
+private/pysessions
