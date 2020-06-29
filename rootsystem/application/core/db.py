@@ -1,10 +1,12 @@
 import MySQLdb
+from settings import DB_HOST, DB_NAME, DB_PASS, DB_USER
 
 
 class DBQuery(object):
 
    def __init__(self, data=[]):
-       self.data = data
+       _data = [DB_HOST, DB_NAME, DB_PASS, DB_USER]
+       self.data = data if data else _data
 
    def execute(self, sql):
        self.sql = sql

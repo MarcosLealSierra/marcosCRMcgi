@@ -32,15 +32,15 @@ class Pedido(object):
 
     def insert(self):
         sql = """
-            INSERT INTO     pedido
-                            (estado, fecha, cliente)
-            VALUES          ({}, '{}', {})
+            INSERT INTO pedido
+            (estado, fecha, cliente)
+            VALUES ({}, '{}', {})
         """.format(
             self.estado,
             self.fecha,
             self.cliente
         )
-        self.pedido_id = DBQuery(db_data).execute(sql)
+        self.pedido_id = DBQuery().execute(sql)
 
     def select(self):
         sql = """

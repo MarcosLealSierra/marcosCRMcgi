@@ -6,9 +6,9 @@ from cgi import FieldStorage
 
 DEFAULT_RESOURCE = "/cliente/listar"  # Módulo y recurso por defecto
 SHOW_ERROR_404 = False
-STATIC_PATH = "/srv/websites/marcosCRMcgi/rootsystem/static"
+STATIC_PATH = "/srv/websites/mksCRM/rootsystem/static"
 TEMPLATE_PATH = "{}/template.html".format(STATIC_PATH)
-PRIVATE_DIR = "/srv/websites/marcosCRMcgi/private"
+PRIVATE_DIR = "/srv/websites/mksCRM/private"
 CREDENTIAL_PATH = "{}/.credentials".format(PRIVATE_DIR)
 
 DB_HOST = "localhost"

@@ -1,4 +1,3 @@
-from cgi import FieldStorage
 from re import sub
 
 from core.db import DBQuery
@@ -9,7 +8,7 @@ from core.render import Template
 from core.sessions import Sessions
 from core.stdobject import StdObject
 from settings import ARG, db_data, HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, \
-    STATIC_PATH, TEMPLATE_PATH
+    POST, STATIC_PATH, TEMPLATE_PATH
 
 
 class Producto(StdObject):
@@ -21,14 +20,14 @@ class Producto(StdObject):
 
     def insert(self):
         sql = """
-            INSERT INTO     producto
-                            (denominacion, precio)
-            VALUES          ('{}', {})
+            INSERT INTO producto
+            (denominacion, precio)
+            VALUES ('{}', {})
         """.format(
             self.denominacion,
             self.precio,
         )
-        self.producto_id = DBQuery(db_data).execute(sql)
+        self.producto_id = DBQuery().execute(sql)
 
     def update(self):
         sql = """
@@ -94,16 +93,14 @@ class ProductoController(Controller):
         self.view.agregar()
 
     def guardar(self):
-        formulario = FieldStorage()
-
-        denominacion = formulario['denominacion'].value
-        precio = formulario['precio'].value
+        denominacion = POST['denominacion'].value
+        precio = POST['precio'].value
 
         self.model.denominacion = denominacion
         self.model.precio = precio
         self.model.insert()
 
-        redirect("producto/ver", self.model.producto_id)
+        redirect("producto/ver/{}".format(self.model.producto_id))
 
     def ver(self):
         self.model.producto_id = ARG

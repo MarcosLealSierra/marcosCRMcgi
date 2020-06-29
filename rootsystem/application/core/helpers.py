@@ -29,22 +29,24 @@ class Sanitizer(object):
         valid_chars.extend(range(65, 91))   # Letras mayúsculas
         valid_chars.extend(range(97, 123))  # Letras minúsculas
         valid_chars.extend([
-            192, 193, 199, 200, 201, 209, 210, 211, 217, 218, 
-            220, 224, 225, 232, 231, 233, 236, 237, 241, 242, 243, 249, 250, 
+            192, 193, 199, 200, 201, 209, 210, 211, 217, 218,
+            220, 224, 225, 232, 231, 233, 236, 237, 241, 242, 243, 249, 250,
             252
         ])
         return valid_chars
-    
+
     @staticmethod
     def clean_string(string):
-        if version.major == 2: street = unicode(street, encoding="utf-8")
+        if version.major == 2: string = unicode(string, encoding="utf-8")
         valid_chars = Sanitizer.get_chars_table()
         valid_chars.extend([39, 46, 170, 186])
 
         cadena = string
-        for char in street:
+        for char in string:
             if not ord(char) in valid_chars:
                 cadena.replace(char, '')
+
+        return cadena
 
     @staticmethod
     def convert_to_html(string):

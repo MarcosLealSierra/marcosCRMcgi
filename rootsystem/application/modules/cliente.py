@@ -1,4 +1,3 @@
-from cgi import FieldStorage
 from re import sub
 
 from core.db import DBQuery
@@ -13,7 +12,7 @@ from modules.domicilio import Domicilio
 from modules.pedido import Pedido
 from settings import ARG, db_data, ERR_CALLE_NO_VALIDA, ERR_NUMERO_NO_VALIDO, \
     ERR_PLANTA_NO_VALIDA, ERR_PUERTA_NO_VALIDA, ERR_CIUDAD_NO_VALIDA, \
-    HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, STATIC_PATH, TEMPLATE_PATH
+    HTTP_HTML, HTTP_REDIRECT, HOST, MODULE, POST, STATIC_PATH, TEMPLATE_PATH
 
 
 class Cliente(StdObject):
@@ -34,15 +33,15 @@ class Cliente(StdObject):
 
     def insert(self):
         sql = """
-            insert into     cliente
-                            (denominacion, nif, domicilio)
-            values          ('{}', '{}', {})
+            INSERT INTO cliente
+            (denominacion, nif, domicilio)
+            VALUES ('{}', '{}', {})
         """.format(
             self.denominacion,
             self.nif,
             self.domicilio.domicilio_id
         )
-        self.cliente_id = DBQuery(db_data).execute(sql)
+        self.cliente_id = DBQuery().execute(sql)
 
     def select(self, producto_collection=False):
         super(Cliente, self).select()
@@ -184,14 +183,20 @@ class ClienteController(object):
         self.view.agregar()
 
     def guardar(self):
-        formulario = FieldStorage()
-        calle = Sanitizer.filter_string(formulario['calle'].value)
-        ciudad = Sanitizer.filter_string(formulario['ciudad'].value)
-        denominacion = Sanitizer.filter_string(formulario['denominacion'].value)
-        numero = Sanitizer.convert_to_int(formulario['numero'].value)
-        planta = Sanitizer.convert_to_int(formulario['planta'].value)
-        puerta = Sanitizer.purge_alnum(formulario['puerta'].value).upper()
-        nif = formulario['nif'].value
+        #calle = Sanitizer.filter_string(POST['calle'].value)
+        #ciudad = Sanitizer.filter_string(POST['ciudad'].value)
+        #denominacion = Sanitizer.filter_string(POST['denominacion'].value)
+        #numero = Sanitizer.convert_to_int(POST['numero'].value)
+        #planta = Sanitizer.convert_to_int(POST['planta'].value)
+        #puerta = Sanitizer.purge_alnum(POST['puerta'].value).upper()
+        #nif = POST['nif'].value
+        calle = POST['calle'].value
+        ciudad = POST['ciudad'].value
+        denominacion = POST['denominacion'].value
+        numero = POST['numero'].value
+        planta = POST['planta'].value
+        puerta = POST['puerta'].value.upper()
+        nif = POST['nif'].value
 
         errores = []
 
@@ -212,9 +217,9 @@ class ClienteController(object):
 
         if errores:
             variables = locals()
-            for k in formulario.keys(): 
-                if k in variables: formulario[k].value = locals()[k]
-            self.view.agregar(errores, formulario)
+            for k in POST.keys():
+                if k in variables: POST[k].value = locals()[k]
+            self.view.agregar(errores, POST)
             exit()
 
         self.model.domicilio = Domicilio()
@@ -230,12 +235,12 @@ class ClienteController(object):
         self.model.insert()
 
         dc = DatoDeContactoController()
-        dc.guardar(formulario, self.model.cliente_id)
+        dc.guardar(POST, self.model.cliente_id)
 
         redirect("cliente/ver/{}".format(self.model.cliente_id))
 
     def ver(self):
-        self.model.cliente_id = int(ARG) 
+        self.model.cliente_id = int(ARG)
         self.model.select(producto_collection=True)
 
         self.view.ver(self.model)
